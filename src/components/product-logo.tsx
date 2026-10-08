@@ -4,10 +4,16 @@ export type ProductName = "Grid" | "School OS" | "Starter";
 
 export const PRODUCTS: ProductName[] = ["Grid", "School OS", "Starter"];
 
-/** Real marks for Grid and School OS; Starter has no logo yet, so it uses a simple layers glyph. */
+/** Real marks for Grid and School OS (the Grid mark is drawn from /logos/grid-ink.svg and grid-blue.svg); Starter has no logo yet, so it uses a simple layers glyph. */
 export function ProductLogo({ name, className = "size-5" }: { name: ProductName; className?: string }) {
 	if (name === "Grid") {
-		return <Image src="/logos/grid-mark.svg" alt="" width={64} height={64} className={className} />;
+		// Two masked layers so the grey part follows the page theme, not the OS setting.
+		return (
+			<span aria-hidden className={`relative inline-block shrink-0 text-ink ${className}`}>
+				<span className="grid-ink" />
+				<span className="grid-blue" />
+			</span>
+		);
 	}
 	if (name === "School OS") {
 		return (

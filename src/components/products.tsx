@@ -1,41 +1,84 @@
+"use client";
+
 import Image from "next/image";
+import { useRef, useState } from "react";
+import { ArrowIcon, GithubIcon } from "./icons";
 import { type ProductName, ProductLogo } from "./product-logo";
+import { ProjectDialog } from "./project-dialog";
 import { SectionHeader } from "./ui";
 
-type Product = {
+export type Product = {
 	name: ProductName;
+	label: string;
 	status: { label: string; tone: "blue" | "green" };
 	desc: string;
 	stack: string;
+	about: string[];
+	facts: [string, string][];
+	screens: string[];
 	github?: string;
 	live?: string;
-	shot: { src: string; alt: string };
 };
 
 const PRODUCTS: Product[] = [
 	{
 		name: "Grid",
+		label: "Agent workspace",
 		status: { label: "Private beta", tone: "blue" },
 		desc: "A workspace where AI agents take tasks, work in their own environment and open pull requests.",
 		stack: "SolidJS · Hono · Bun · PostgreSQL",
-		shot: { src: "/shots/grid.webp", alt: "Grid board with agent tasks" },
+		about: [
+			"A self-hosted workspace where people and AI coding agents share one project board, live agent threads, a file editor, terminals and pull request checks, from desktop or phone.",
+			"Works with Claude Code, Codex, opencode and any ACP agent.",
+		],
+		facts: [
+			["Stack", "SolidJS, Hono, PostgreSQL, Bun"],
+			["Status", "Private beta"],
+			["Started", "2025"],
+		],
+		screens: [
+			"/projects/grid-board.webp",
+			"/projects/grid-thread.webp",
+			"/projects/grid-home.webp",
+			"/projects/grid-pr.webp",
+			"/projects/grid-ship.webp",
+		],
 	},
 	{
 		name: "School OS",
+		label: "School platform",
 		status: { label: "Open source", tone: "green" },
 		desc: "Attendance, homework, guardians and WhatsApp messages for schools. Each school gets its own tenant.",
 		stack: "Next.js · NestJS · Expo · PostgreSQL",
+		about: [
+			"A multi-tenant school platform: a teacher scans a student's QR code at the gate, the parent gets a WhatsApp alert, and the principal's dashboard updates.",
+			"Students, guardians, staff, attendance, homework and assessments are built; parent alerts are next.",
+		],
+		facts: [
+			["Stack", "Next.js, Expo, NestJS, PostgreSQL"],
+			["Status", "In development"],
+			["Started", "2025"],
+		],
+		screens: ["/projects/school-os.webp", "/projects/school-os-students.webp"],
 		github: "https://github.com/shabirkhan-dev/school-os",
-		shot: { src: "/shots/school-os.webp", alt: "School OS dashboard" },
 	},
 	{
 		name: "Starter",
+		label: "SaaS monorepo",
 		status: { label: "Open source", tone: "green" },
 		desc: "The monorepo every RabtX product starts from: web, mobile, API and docs with one UI layer and one CI pipeline.",
 		stack: "Next.js · Expo · NestJS · Bun",
+		about: [
+			"A production-ready SaaS monorepo on Bun and Turborepo: Next.js, Expo, NestJS, Fumadocs and FastAPI apps sharing one UI layer, one TypeScript config and one CI pipeline.",
+		],
+		facts: [
+			["Stack", "Next.js, Expo, NestJS, Bun, Turborepo"],
+			["License", "MIT / Apache-2.0"],
+			["Started", "2025"],
+		],
+		screens: ["/projects/starter.webp"],
 		github: "https://github.com/shabirkhan-dev/starter",
 		live: "https://starter-two-henna.vercel.app",
-		shot: { src: "/shots/starter.webp", alt: "Starter website" },
 	},
 ];
 
@@ -44,35 +87,34 @@ const TONE = {
 	green: "bg-live/10 text-live-ink",
 };
 
-function GithubIcon() {
+function ProductCard({ p, onOpen }: { p: Product; onOpen: () => void }) {
 	return (
-		<svg viewBox="0 0 16 16" fill="currentColor" aria-hidden className="size-4">
-			<path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z" />
-		</svg>
-	);
-}
-
-function ProductCard({ p }: { p: Product }) {
-	return (
-		<article className="group flex flex-col overflow-hidden rounded-[20px] border border-line bg-surface transition-colors hover:border-ink/20">
+		<article className="group relative flex flex-col overflow-hidden rounded-[20px] border border-line bg-surface transition-colors hover:border-ink/20">
+			{/* The whole card opens the details; the GitHub and Live links sit above this button. */}
+			<button
+				type="button"
+				onClick={onOpen}
+				aria-label={`Open ${p.name} details`}
+				className="absolute inset-0 z-0 cursor-pointer rounded-[20px]"
+			/>
 			{/* screenshot peeks in from the top-left of its own frame, so text can never run into it */}
-			<div className="relative aspect-[16/10] overflow-hidden border-b border-line bg-surface-2">
+			<div className="pointer-events-none relative aspect-[16/10] overflow-hidden border-b border-line bg-surface-2">
 				<Image
-					src={p.shot.src}
-					alt={p.shot.alt}
-					width={1120}
-					height={700}
+					src={p.screens[0]}
+					alt=""
+					width={1440}
+					height={900}
 					sizes="(min-width: 1024px) 560px, 90vw"
 					className="absolute left-6 top-6 w-[150%] max-w-none rounded-tl-xl border-l border-t border-line transition-transform duration-300 ease-out group-hover:-translate-x-1 group-hover:-translate-y-1 motion-reduce:transition-none"
 				/>
 			</div>
-			<div className="flex flex-1 flex-col p-6">
+			<div className="pointer-events-none relative flex flex-1 flex-col p-6">
 				<div className="flex h-8 items-center justify-between gap-3">
 					<h3 className="flex items-center gap-2.5 text-lg font-semibold tracking-[-0.03em]">
 						<ProductLogo name={p.name} className="size-[22px]" />
 						{p.name}
 					</h3>
-					<div className="flex items-center gap-1.5">
+					<div className="pointer-events-auto relative z-10 flex items-center gap-1.5">
 						{p.github && (
 							<a
 								href={p.github}
@@ -92,16 +134,7 @@ function ProductCard({ p }: { p: Product }) {
 								className="flex h-8 items-center gap-1 rounded-full bg-ink pl-3 pr-2.5 text-xs font-semibold text-inv transition-opacity hover:opacity-85"
 							>
 								Live
-								<svg viewBox="0 0 12 12" aria-hidden className="size-3">
-									<path
-										d="M3.5 8.5L8.5 3.5M4.5 3.5H8.5V7.5"
-										stroke="currentColor"
-										strokeWidth="1.4"
-										fill="none"
-										strokeLinecap="round"
-										strokeLinejoin="round"
-									/>
-								</svg>
+								<ArrowIcon />
 							</a>
 						)}
 					</div>
@@ -114,10 +147,15 @@ function ProductCard({ p }: { p: Product }) {
 				</span>
 				<p className="mt-4 text-[15px] leading-[23px] text-muted">{p.desc}</p>
 				<div className="mt-auto pt-6">
-					<p className="border-t border-line pt-4 font-mono text-xs text-subtle">
-						<span className="sr-only">Built with </span>
-						{p.stack}
-					</p>
+					<div className="flex items-center justify-between gap-4 border-t border-line pt-4">
+						<p className="font-mono text-xs text-subtle">
+							<span className="sr-only">Built with </span>
+							{p.stack}
+						</p>
+						<span className="shrink-0 text-xs font-semibold text-ink transition-transform group-hover:translate-x-0.5">
+							Details →
+						</span>
+					</div>
 				</div>
 			</div>
 		</article>
@@ -125,14 +163,25 @@ function ProductCard({ p }: { p: Product }) {
 }
 
 export function Products() {
+	const dialog = useRef<HTMLDialogElement>(null);
+	const [open, setOpen] = useState<Product | null>(null);
+
 	return (
 		<section id="products" className="scroll-mt-24 px-4 pt-20 sm:px-20">
 			<SectionHeader chip="Products" title="What we’ve built." />
 			<div className="mx-auto mt-[72px] grid max-w-[640px] gap-6 lg:max-w-[1280px] lg:grid-cols-3">
 				{PRODUCTS.map((p) => (
-					<ProductCard key={p.name} p={p} />
+					<ProductCard
+						key={p.name}
+						p={p}
+						onOpen={() => {
+							setOpen(p);
+							dialog.current?.showModal();
+						}}
+					/>
 				))}
 			</div>
+			<ProjectDialog ref={dialog} product={open} />
 		</section>
 	);
 }

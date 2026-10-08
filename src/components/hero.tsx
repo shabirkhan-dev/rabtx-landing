@@ -1,26 +1,34 @@
+import Link from "next/link";
 import { LogoTile, Mark } from "./logo";
 import { PRODUCTS, ProductLogo } from "./product-logo";
+import { ThemeToggle } from "./theme-toggle";
 import { Pill } from "./ui";
 
 /** Floating nav: logo tile, a links pill and the call-to-action pill. */
 export function Nav() {
 	return (
 		<header className="fixed inset-x-0 top-[15px] z-50 flex justify-center px-4">
-			<nav className="flex items-center gap-2" aria-label="Main">
-				<a href="#" aria-label="RabtX home">
+			{/* soft fade so content scrolling under the floating nav doesn't fight with it */}
+			<span
+				aria-hidden
+				className="pointer-events-none absolute inset-x-0 -top-[15px] h-[104px] bg-gradient-to-b from-bg from-55% to-transparent"
+			/>
+			<nav className="relative flex items-center gap-2" aria-label="Main">
+				<Link href="/" aria-label="RabtX home">
 					<LogoTile />
-				</a>
+				</Link>
 				<div className="flex h-[42px] items-center gap-3 whitespace-nowrap rounded-full bg-surface/85 px-3 backdrop-blur-md text-[13px] font-medium text-muted sm:gap-4 sm:px-4">
-					<a href="#products" className="hover:text-ink">
+					<Link href="/#products" className="hover:text-ink">
 						Products
-					</a>
-					<a href="#how" className="hover:text-ink">
+					</Link>
+					<Link href="/#how" className="hidden hover:text-ink sm:inline">
 						How we work
-					</a>
+					</Link>
 				</div>
 				<Pill href="#contact" variant="secondary" size="sm">
 					Start a project
 				</Pill>
+				<ThemeToggle />
 			</nav>
 		</header>
 	);
