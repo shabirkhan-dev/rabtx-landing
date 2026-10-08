@@ -31,5 +31,11 @@
   "trustedDependencies": [
     "sharp",
     "unrs-resolver"
+  ],
+  "browserslist": [
+    "chrome 120",
+    "edge 120",
+    "firefox 121",
+    "safari 17.2"
   ]
 }

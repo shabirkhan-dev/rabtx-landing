@@ -40,8 +40,8 @@ const PRODUCTS: Product[] = [
 ];
 
 const TONE = {
-	blue: "bg-blue/10 text-blue",
-	green: "bg-live/10 text-live",
+	blue: "bg-blue/10 text-accent-ink",
+	green: "bg-live/10 text-live-ink",
 };
 
 function GithubIcon() {
@@ -54,7 +54,7 @@ function GithubIcon() {
 
 function ProductCard({ p }: { p: Product }) {
 	return (
-		<article className="flex flex-col overflow-hidden rounded-[20px] border border-line bg-surface">
+		<article className="group flex flex-col overflow-hidden rounded-[20px] border border-line bg-surface transition-colors hover:border-ink/20">
 			{/* screenshot peeks in from the top-left of its own frame, so text can never run into it */}
 			<div className="relative aspect-[16/10] overflow-hidden border-b border-line bg-surface-2">
 				<Image
@@ -63,7 +63,7 @@ function ProductCard({ p }: { p: Product }) {
 					width={1120}
 					height={700}
 					sizes="(min-width: 1024px) 560px, 90vw"
-					className="absolute left-6 top-6 w-[150%] max-w-none rounded-tl-xl border-l border-t border-line"
+					className="absolute left-6 top-6 w-[150%] max-w-none rounded-tl-xl border-l border-t border-line transition-transform duration-300 ease-out group-hover:-translate-x-1 group-hover:-translate-y-1 motion-reduce:transition-none"
 				/>
 			</div>
 			<div className="flex flex-1 flex-col p-6">
@@ -112,9 +112,9 @@ function ProductCard({ p }: { p: Product }) {
 					<span className="size-1.5 rounded-full bg-current" />
 					{p.status.label}
 				</span>
-				<p className="mt-4 text-[15px] leading-[23px] text-ink/65">{p.desc}</p>
+				<p className="mt-4 text-[15px] leading-[23px] text-muted">{p.desc}</p>
 				<div className="mt-auto pt-6">
-					<p className="border-t border-line pt-4 font-mono text-xs text-ink/50">
+					<p className="border-t border-line pt-4 font-mono text-xs text-subtle">
 						<span className="sr-only">Built with </span>
 						{p.stack}
 					</p>

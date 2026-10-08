@@ -10,7 +10,7 @@ export function Nav() {
 				<a href="#" aria-label="RabtX home">
 					<LogoTile />
 				</a>
-				<div className="flex h-[42px] items-center gap-3 whitespace-nowrap rounded-full bg-surface px-3 text-[13px] font-medium text-ink/60 sm:gap-4 sm:px-4">
+				<div className="flex h-[42px] items-center gap-3 whitespace-nowrap rounded-full bg-surface/85 px-3 backdrop-blur-md text-[13px] font-medium text-muted sm:gap-4 sm:px-4">
 					<a href="#products" className="hover:text-ink">
 						Products
 					</a>
@@ -30,7 +30,7 @@ export function Hero() {
 	return (
 		<section className="flex flex-col items-center px-4 pb-14 pt-[120px] text-center">
 			<Mark className="w-[120px] text-faded" />
-			<p className="relative -mt-[29px] inline-flex items-center gap-2.5 rounded-full bg-surface py-2 pl-3 pr-3.5 text-[13px] font-medium text-ink/65">
+			<p className="relative -mt-[29px] inline-flex items-center gap-2.5 rounded-full bg-surface py-2 pl-3 pr-3.5 text-[13px] font-medium text-muted">
 				<span className="size-2 rounded-full bg-live" />
 				Product studio · Islamabad
 			</p>
@@ -41,7 +41,7 @@ export function Hero() {
 				<br />
 				full-stack.
 			</h1>
-			<p className="mt-[18px] max-w-[420px] text-[17px] leading-6 text-ink/60">
+			<p className="mt-[18px] max-w-[420px] text-[17px] leading-6 text-muted">
 				We build our own products and run them,<br className="hidden sm:inline" /> from the interface to the model calls.
 			</p>
 			<div className="mt-[38px] flex flex-wrap justify-center gap-1.5">

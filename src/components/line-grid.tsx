@@ -50,7 +50,7 @@ export function Cell({ title, desc, children }: { title: string; desc: string; c
 		<div className="flex h-full flex-col items-center px-6 pb-11 pt-10 text-center">
 			<div className="relative h-[220px] w-full max-w-[360px]">{children}</div>
 			<h3 className="mt-6 text-[13px] font-semibold tracking-[0.05em]">{title}</h3>
-			<p className="mt-2.5 max-w-[440px] text-[15px] leading-[23px] text-ink/65">{desc}</p>
+			<p className="mt-2.5 max-w-[440px] text-[15px] leading-[23px] text-muted">{desc}</p>
 		</div>
 	);
 }

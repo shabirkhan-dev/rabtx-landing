@@ -44,7 +44,7 @@ export function Engineering() {
 									<span className={`size-2 shrink-0 rounded-full ${t.dot}`} />
 									<span className="flex flex-col">
 										<span className="text-[13px] font-medium tracking-[-0.01em]">{t.title}</span>
-										<span className="font-mono text-[11px] text-ink/50">{t.agent}</span>
+										<span className="font-mono text-[11px] text-subtle">{t.agent}</span>
 									</span>
 								</div>
 							))}
@@ -88,7 +88,7 @@ export function Engineering() {
 function Pipeline() {
 	return (
 		<div className="absolute left-1/2 top-6 w-[310px] max-w-full -translate-x-1/2 rounded-xl border border-line bg-surface p-4 text-left">
-			<div className="grid grid-cols-[96px_1fr_1fr_1fr] gap-x-2 font-mono text-[11px] text-ink/45">
+			<div className="grid grid-cols-[96px_1fr_1fr_1fr] gap-x-2 font-mono text-[11px] text-subtle">
 				<span />
 				{STAGES.map((s) => (
 					<span key={s} className="text-center">
@@ -114,7 +114,7 @@ function Pipeline() {
 					);
 				})}
 			</div>
-			<div className="mt-5 flex items-center gap-4 border-t border-line pt-3 font-mono text-[11px] text-ink/55">
+			<div className="mt-5 flex items-center gap-4 border-t border-line pt-3 font-mono text-[11px] text-subtle">
 				<span className="flex items-center gap-1.5">
 					<span className="size-2 rounded-full bg-live" />
 					in production

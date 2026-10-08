@@ -61,7 +61,7 @@ function AiLayers() {
 								<span className={`size-2.5 rounded-full border-2 border-blue ${on ? "bg-blue" : "bg-surface"}`} />
 								<span className={on ? "text-ink" : "text-ink/80"}>{name}</span>
 							</span>
-							<span className={`text-[11px] ${on ? "text-blue" : "text-ink/50"}`}>{meta}</span>
+							<span className={`text-[11px] ${on ? "text-accent-ink" : "text-subtle"}`}>{meta}</span>
 						</div>
 					);
 				})}
@@ -78,12 +78,12 @@ function Tokens() {
 			<pre className="font-mono text-[13px] leading-[26px] text-code">
 				{TOKENS.map((l, i) => (
 					<div key={l} className="flex gap-3">
-						<span className="w-3 text-ink/30">{i + 1}</span>
+						<span className="w-3 text-subtle">{i + 1}</span>
 						<span>
 							{i === 2 ? (
 								<>
 									{"  color: { accent: "}
-									<span className="text-blue">&apos;#2D7CF6&apos;</span>
+									<span className="text-accent-ink">&apos;#2D7CF6&apos;</span>
 									{" },"}
 								</>
 							) : (
@@ -93,8 +93,8 @@ function Tokens() {
 					</div>
 				))}
 			</pre>
-			<CursorTag name="Shabir" className="right-0 top-[18px] bg-blue" />
-			<CursorTag name="Claude" className="right-2 top-[96px] bg-claude" />
+			<CursorTag name="Shabir" className="right-0 top-[18px] bg-tag-blue" />
+			<CursorTag name="Claude" className="right-2 top-[96px] bg-tag-claude" />
 		</div>
 	);
 }
@@ -163,12 +163,12 @@ function Monorepo() {
 				{TREE.map(([path, tag], i) => (
 					<li key={path} className="flex h-9 items-center justify-between text-[13px]">
 						<span className="flex items-center gap-2 text-ink/80">
-							<span className="text-ink/30">{i === TREE.length - 1 ? "└" : "├"}</span>
+							<span className="text-subtle">{i === TREE.length - 1 ? "└" : "├"}</span>
 							{path}
 						</span>
 						<span
 							className={`rounded-md px-2 py-0.5 text-[11px] ${
-								tag === "shared" ? "bg-blue/10 text-blue" : "bg-surface-2 text-ink/55"
+								tag === "shared" ? "bg-blue/10 text-accent-ink" : "bg-surface-2 text-subtle"
 							}`}
 						>
 							{tag}

@@ -21,7 +21,7 @@ export function Footer() {
 					<br />
 					AI-native.
 				</h2>
-				<p className="mt-[18px] text-[17px] leading-6 text-ink/60">Tell us what you&rsquo;re building.</p>
+				<p className="mt-[18px] text-[17px] leading-6 text-muted">Tell us what you&rsquo;re building.</p>
 				<div className="mt-[38px] flex flex-wrap justify-center gap-1.5">
 					<Pill href={EMAIL}>Start a project</Pill>
 					<Pill href="#products" variant="secondary">
@@ -34,7 +34,7 @@ export function Footer() {
 					<LogoTile className="size-7 rounded-lg" />
 					<Wordmark className="h-4" />
 				</a>
-				<nav className="flex flex-wrap justify-center gap-6 text-sm font-medium text-ink/60" aria-label="Footer">
+				<nav className="flex flex-wrap justify-center gap-6 text-sm font-medium text-muted" aria-label="Footer">
 					{LINKS.map(([label, href]) => (
 						<a
 							key={label}
@@ -46,7 +46,7 @@ export function Footer() {
 						</a>
 					))}
 				</nav>
-				<p className="text-sm text-ink/60">© 2026 RabtX</p>
+				<p className="text-sm text-muted">© 2026 RabtX</p>
 			</div>
 		</footer>
 	);

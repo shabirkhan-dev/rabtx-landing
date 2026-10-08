@@ -9,7 +9,7 @@ type PillProps = {
 
 /** The rounded pill used for every button on the page. */
 export function Pill({ href, children, variant = "primary", size = "lg" }: PillProps) {
-	const tone = variant === "primary" ? "bg-ink text-inv" : "bg-surface text-ink";
+	const tone = variant === "primary" ? "bg-ink text-inv" : "bg-surface/85 text-ink backdrop-blur-md";
 	const scale = size === "lg" ? "h-[54px] px-6 text-base" : "h-[42px] px-3.5 text-[13px] sm:px-4";
 	return (
 		<a
@@ -26,7 +26,7 @@ export function Pill({ href, children, variant = "primary", size = "lg" }: PillP
 export function Chip({ children, mono = false }: { children: ReactNode; mono?: boolean }) {
 	return (
 		<span className="inline-flex items-center gap-1.5 rounded-full border border-line bg-surface px-3 py-1.5">
-			{!mono && <span className="text-[11px] text-blue">✦</span>}
+			{!mono && <span className="text-[11px] text-accent-ink">✦</span>}
 			<span
 				className={
 					mono
@@ -58,7 +58,7 @@ export function SectionHeader({
 			<h2 className="mt-4 text-[32px] font-medium leading-[1.15] tracking-[-0.03em] sm:text-[40px]">
 				{title}
 			</h2>
-			{sub && <p className="mt-3.5 max-w-md text-[15px] leading-[22px] text-ink/60">{sub}</p>}
+			{sub && <p className="mt-3.5 max-w-md text-[15px] leading-[22px] text-muted">{sub}</p>}
 		</div>
 	);
 }
