@@ -9,10 +9,9 @@ const TASKS = [
 ];
 
 const SERVICES = [
-	["console", "live"],
-	["api", "live"],
-	["runner", "live"],
-	["deploy #228", "done"],
+	{ name: "grid", state: "beta", tone: "text-blue", dot: "bg-blue" },
+	{ name: "school os", state: "staging", tone: "text-[#D9A23B]", dot: "bg-[#D9A23B]" },
+	{ name: "starter docs", state: "live", tone: "text-live", dot: "bg-live" },
 ];
 
 const LAYERS: [string, number, number][] = [
@@ -47,15 +46,11 @@ export function Engineering() {
 				<div className="relative flex flex-col gap-6 px-6 pt-16 sm:px-14 sm:pt-[88px] md:flex-row md:justify-between">
 					<div>
 						<h2 className="text-[36px] font-light leading-[1.1] tracking-[-0.055em] sm:text-[44px]">
-							Engineering,
-							<br />
-							built around AI.
+							How we ship.
 						</h2>
-						<p className="mt-3 text-[13px] text-ink/60">How RabtX takes a product from a plan to production.</p>
 					</div>
 					<p className="max-w-[300px] text-[13px] leading-[19px] text-ink/60 md:mt-3">
-						Agents do the repetitive work in disposable environments. People make the product decisions and
-						review every change.
+						Agents write the code. We decide what to build and review every change.
 					</p>
 				</div>
 
@@ -100,12 +95,12 @@ export function Engineering() {
 					</Step>
 					<Step icon="△" label="Run what we ship" desc="We deploy, monitor and keep our own products running.">
 						<div className="flex flex-col gap-5 rounded-[10px] border border-line bg-surface px-4 py-[18px]">
-							{SERVICES.map(([name, state]) => (
-								<div key={name} className="flex items-center justify-between font-mono text-xs">
-									<span className="text-ink/80">{name}</span>
-									<span className="flex items-center gap-1.5 text-[11px] text-live">
-										<span className="size-[7px] rounded-full bg-live" />
-										{state}
+							{SERVICES.map((s) => (
+								<div key={s.name} className="flex items-center justify-between font-mono text-xs">
+									<span className="text-ink/80">{s.name}</span>
+									<span className={`flex items-center gap-1.5 text-[11px] ${s.tone}`}>
+										<span className={`size-[7px] rounded-full ${s.dot}`} />
+										{s.state}
 									</span>
 								</div>
 							))}
@@ -117,8 +112,7 @@ export function Engineering() {
 					<div>
 						<p className="font-mono text-[11px] tracking-[0.27em] text-ink/50">AI-NATIVE PRODUCT STUDIO</p>
 						<p className="mt-4 max-w-[640px] text-xl leading-[1.35] tracking-[-0.05em] sm:text-2xl">
-							Every product starts from Starter, our production monorepo, so auth, CI, docs and tests are in
-							place on day one.
+							Every product starts from Starter, so CI, docs and the shared UI are there on day one.
 						</p>
 					</div>
 					<Image

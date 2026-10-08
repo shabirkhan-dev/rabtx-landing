@@ -1,12 +1,5 @@
 export type AgentId = "claude" | "codex" | "opencode" | "antigravity";
 
-export const AGENTS: { id: AgentId; name: string }[] = [
-	{ id: "claude", name: "Claude Code" },
-	{ id: "codex", name: "Codex" },
-	{ id: "opencode", name: "opencode" },
-	{ id: "antigravity", name: "Antigravity" },
-];
-
 export function AgentLogo({ id, className = "size-5" }: { id: AgentId; className?: string }) {
 	switch (id) {
 		case "claude":

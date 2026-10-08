@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
 	title: "RabtX — AI-native products, built full-stack",
 	description:
-		"RabtX is a product studio. We design, engineer and run our own AI-native products, from the interface to the model calls.",
+		"RabtX is a product studio in Islamabad. We build our own AI-native products and run them, from the interface to the model calls.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

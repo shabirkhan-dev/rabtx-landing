@@ -10,12 +10,12 @@ export function Nav() {
 				<a href="#" aria-label="RabtX home">
 					<LogoTile />
 				</a>
-				<div className="flex h-[42px] items-center gap-4 rounded-full bg-surface px-4 text-[13px] font-medium text-ink/60">
+				<div className="flex h-[42px] items-center gap-3 whitespace-nowrap rounded-full bg-surface px-3 text-[13px] font-medium text-ink/60 sm:gap-4 sm:px-4">
 					<a href="#products" className="hover:text-ink">
 						Products
 					</a>
-					<a href="#writing" className="hover:text-ink">
-						Writing
+					<a href="#how" className="hover:text-ink">
+						How we work
 					</a>
 				</div>
 				<Pill href="#contact" variant="secondary" size="sm">
@@ -32,7 +32,7 @@ export function Hero() {
 			<Mark className="w-[120px] text-faded" />
 			<p className="relative -mt-[29px] inline-flex items-center gap-2.5 rounded-full bg-surface py-2 pl-3 pr-3.5 text-[13px] font-medium text-ink/65">
 				<span className="size-2 rounded-full bg-live" />
-				Grid public beta is live
+				Product studio · Islamabad
 			</p>
 			<h1 className="mt-3.5 text-[40px] font-bold leading-none tracking-[-0.04em] sm:text-[56px]">
 				A studio building
@@ -42,7 +42,7 @@ export function Hero() {
 				full-stack.
 			</h1>
 			<p className="mt-[18px] max-w-[420px] text-[17px] leading-6 text-ink/60">
-				We design, engineer and run our own products, from the interface to the model calls.
+				We build our own products and run them,<br className="hidden sm:inline" /> from the interface to the model calls.
 			</p>
 			<div className="mt-[38px] flex flex-wrap justify-center gap-1.5">
 				<Pill href="#contact">Start a project</Pill>
@@ -52,7 +52,7 @@ export function Hero() {
 			</div>
 
 			<h2 className="mt-24 text-base font-semibold tracking-[-0.01em] sm:mt-[158px]">
-				Products we build and run
+				Our products
 			</h2>
 			<ul className="mt-8 flex max-w-[765px] flex-wrap items-center justify-center sm:mt-14">
 				{PRODUCTS.map((name) => (

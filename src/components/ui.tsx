@@ -10,11 +10,12 @@ type PillProps = {
 /** The rounded pill used for every button on the page. */
 export function Pill({ href, children, variant = "primary", size = "lg" }: PillProps) {
 	const tone = variant === "primary" ? "bg-ink text-inv" : "bg-surface text-ink";
-	const scale = size === "lg" ? "h-[54px] px-6 text-base" : "h-[42px] px-4 text-[13px]";
+	const scale = size === "lg" ? "h-[54px] px-6 text-base" : "h-[42px] px-3.5 text-[13px] sm:px-4";
 	return (
 		<a
 			href={href}
-			className={`inline-flex items-center justify-center rounded-full font-semibold tracking-[-0.01em] transition-opacity hover:opacity-85 ${tone} ${scale}`}
+			{...(href.startsWith("http") ? { target: "_blank", rel: "noreferrer" } : {})}
+			className={`inline-flex items-center justify-center whitespace-nowrap rounded-full font-semibold tracking-[-0.01em] transition-opacity hover:opacity-85 ${tone} ${scale}`}
 		>
 			{children}
 		</a>

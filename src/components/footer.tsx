@@ -1,12 +1,14 @@
 import { LogoTile, Mark, Wordmark } from "./logo";
 import { Pill } from "./ui";
 
+const EMAIL = "mailto:shabirkhan.dev@gmail.com";
+
 const LINKS = [
 	["Products", "#products"],
-	["Writing", "#writing"],
-	["LinkedIn", "https://www.linkedin.com/"],
-	["GitHub", "https://github.com/"],
-	["Email", "mailto:"],
+	["How we work", "#how"],
+	["LinkedIn", "https://www.linkedin.com/in/shabirkhan23"],
+	["GitHub", "https://github.com/shabirkhan-dev"],
+	["Email", EMAIL],
 ];
 
 export function Footer() {
@@ -19,9 +21,9 @@ export function Footer() {
 					<br />
 					AI-native.
 				</h2>
-				<p className="mt-[18px] text-[17px] leading-6 text-ink/60">Tell us what you are building.</p>
+				<p className="mt-[18px] text-[17px] leading-6 text-ink/60">Tell us what you&rsquo;re building.</p>
 				<div className="mt-[38px] flex flex-wrap justify-center gap-1.5">
-					<Pill href="mailto:">Start a project</Pill>
+					<Pill href={EMAIL}>Start a project</Pill>
 					<Pill href="#products" variant="secondary">
 						See our products
 					</Pill>
@@ -34,7 +36,12 @@ export function Footer() {
 				</a>
 				<nav className="flex flex-wrap justify-center gap-6 text-sm font-medium text-ink/60" aria-label="Footer">
 					{LINKS.map(([label, href]) => (
-						<a key={label} href={href} className="hover:text-ink">
+						<a
+							key={label}
+							href={href}
+							{...(href.startsWith("http") ? { target: "_blank", rel: "noreferrer" } : {})}
+							className="hover:text-ink"
+						>
 							{label}
 						</a>
 					))}

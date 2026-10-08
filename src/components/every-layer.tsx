@@ -8,7 +8,7 @@ function Cell({ title, desc, children }: { title: string; desc: string; children
 		<div className="flex flex-col items-center border-b border-line px-4 pb-10 text-center md:h-[360px] md:[&:nth-child(odd)]:border-r">
 			<div className="relative h-[230px] w-full max-w-[360px]">{children}</div>
 			<h3 className="mt-auto text-xs font-semibold tracking-[0.04em]">{title}</h3>
-			<p className="mt-2.5 max-w-[440px] text-sm leading-[21px] text-ink/60">{desc}</p>
+			<p className="mt-2.5 max-w-[500px] text-sm leading-[21px] text-ink/60">{desc}</p>
 		</div>
 	);
 }
@@ -23,13 +23,8 @@ function Marker({ className }: { className: string }) {
 
 export function EveryLayer() {
 	return (
-		<section className="pt-[70px]">
-			<SectionHeader
-				monoChip
-				chip="WHAT WE BUILD"
-				title="Every layer, one studio."
-				sub="Interface, AI, infrastructure and design, built by the same team and shipped as one product."
-			/>
+		<section id="how" className="scroll-mt-24 pt-[70px]">
+			<SectionHeader monoChip chip="HOW WE WORK" title="One team, from interface to infrastructure." />
 			<div className="relative mx-auto mt-20 max-w-[1280px] border-t border-line md:mx-20 xl:mx-auto">
 				{/* lines run past the grid like the reference */}
 				<span className="absolute -inset-x-10 top-1/2 hidden h-px bg-line md:block" />
@@ -42,31 +37,13 @@ export function EveryLayer() {
 				<div className="grid md:grid-cols-2">
 					<Cell
 						title="AI-NATIVE BY DEFAULT"
-						desc="Models, agents and retrieval sit in the core of every product, with evaluation built in, not added on later."
+						desc="Model calls, agents and retrieval are part of the product from day one."
 					>
-						<div className="absolute left-1/2 top-[54px] h-[104px] w-[300px] -translate-x-1/2 rounded-[14px] border-[1.5px] border-blue bg-surface p-4 text-left">
-							<p className="text-[13px] text-ink/55">Add a task for an agent…</p>
-							<span className="absolute bottom-3 left-3 grid size-6 place-items-center rounded-[7px] border border-line text-sm text-ink/60">
-								+
-							</span>
-							<span className="absolute bottom-3 right-3 grid size-6 place-items-center rounded-[7px] bg-blue text-[13px] font-semibold text-white">
-								↑
-							</span>
-						</div>
-						<div className="absolute inset-x-0 top-[172px] flex justify-center gap-1.5">
-							{["board.tsx", "runner.ts", "schema.sql"].map((f) => (
-								<span
-									key={f}
-									className="rounded-md border border-line bg-surface px-2.5 py-1 font-mono text-[11px] text-ink/75"
-								>
-									{f}
-								</span>
-							))}
-						</div>
+						<AiLayers />
 					</Cell>
 					<Cell
 						title="DESIGN AND CODE TOGETHER"
-						desc="One set of tokens drives Figma and the codebase, so what is designed is exactly what ships."
+						desc="Figma and the code share one set of design tokens."
 					>
 						<pre className="absolute left-6 top-[56px] font-mono text-xs leading-[22px] text-code">
 							{[
@@ -96,8 +73,8 @@ export function EveryLayer() {
 						<CursorTag name="Claude" className="left-[266px] top-[128px] bg-claude" />
 					</Cell>
 					<Cell
-						title="WORKS WITH YOUR AGENTS"
-						desc="Claude Code, Codex, opencode and Antigravity run side by side. No product is tied to one AI provider."
+						title="BUILT WITH AI AGENTS"
+						desc="We build with Claude Code, Codex, opencode and Antigravity, and don’t tie any product to one provider."
 					>
 						<svg viewBox="0 0 360 230" className="absolute inset-0 size-full" aria-hidden>
 							<defs>
@@ -136,36 +113,10 @@ export function EveryLayer() {
 						</span>
 					</Cell>
 					<Cell
-						title="BUILT TO BE OWNED"
-						desc="Products run on your own machine or server. Your code, data and keys stay with you."
+						title="WEB, MOBILE AND API"
+						desc="Next.js on the web, Expo on mobile, and typed APIs behind both."
 					>
-						<pre className="absolute left-1/2 top-12 -translate-x-1/2 font-mono text-xs leading-[26px] text-ink/10">
-							{`import { db } from "@grid/db";\n    const keys = vault.local();\nrunner.start({ host: "self" });\n    audit.log(session.id);\nexport default app;`}
-						</pre>
-						<svg viewBox="0 0 260 230" className="absolute left-1/2 top-0 h-[230px] -translate-x-1/2" aria-hidden>
-							<defs>
-								<linearGradient id="shield-s" x1="0" y1="0" x2="0" y2="1">
-									<stop offset="0" stopColor="#2D7CF6" />
-									<stop offset="1" stopColor="#7A9DFF" stopOpacity="0.4" />
-								</linearGradient>
-								<radialGradient id="shield-g" cx="0.5" cy="0.45" r="0.5">
-									<stop offset="0" stopColor="#2D7CF6" stopOpacity="0.22" />
-									<stop offset="1" stopColor="#2D7CF6" stopOpacity="0" />
-								</radialGradient>
-							</defs>
-							<circle cx="130" cy="112" r="110" fill="url(#shield-g)" />
-							<path
-								d="M130 40L190 64V112C190 150 164 176 130 188C96 176 70 150 70 112V64Z"
-								fill="var(--surface)"
-								stroke="url(#shield-s)"
-								strokeWidth="3"
-							/>
-							<path
-								d="M130 62L172 79V112C172 139 154 157 130 166C106 157 88 139 88 112V79Z"
-								fill="var(--surface-2)"
-								stroke="var(--line)"
-							/>
-						</svg>
+						<Platforms />
 					</Cell>
 				</div>
 			</div>
@@ -179,5 +130,79 @@ function CursorTag({ name, className }: { name: string; className: string }) {
 			{name}
 			<span className={`absolute -left-[3px] top-[20px] h-[18px] w-[1.5px] ${className.split(" ").at(-1)}`} />
 		</span>
+	);
+}
+
+const AI_LAYERS = [
+	["interface", "next.js · expo"],
+	["model", "claude · gpt"],
+	["data", "postgres · vectors"],
+];
+
+/** Interface, model and data layers threaded by one AI line, with the model layer lit. */
+function AiLayers() {
+	return (
+		<div className="absolute left-1/2 top-[38px] w-[280px] -translate-x-1/2">
+			<span className="absolute left-[21px] top-[22px] h-32 w-0.5 bg-blue" />
+			<div className="flex flex-col gap-5">
+				{AI_LAYERS.map(([name, meta]) => {
+					const on = name === "model";
+					return (
+						<div
+							key={name}
+							className={`relative flex h-11 items-center justify-between rounded-xl px-[14px] font-mono ${
+								on ? "border-[1.5px] border-blue bg-blue/10" : "border border-line bg-surface"
+							}`}
+						>
+							<span className="flex items-center gap-[13px] text-xs font-medium">
+								<span className={`size-2.5 rounded-full border-2 border-blue ${on ? "bg-blue" : "bg-surface"}`} />
+								<span className={on ? "text-ink" : "text-ink/80"}>{name}</span>
+							</span>
+							<span className={`text-[10px] ${on ? "text-blue" : "text-ink/45"}`}>{meta}</span>
+						</div>
+					);
+				})}
+			</div>
+		</div>
+	);
+}
+
+/** A browser, a phone and an API panel: what the studio ships. */
+function Platforms() {
+	return (
+		<div className="absolute left-1/2 top-12 flex -translate-x-1/2 items-start gap-4 scale-[0.72] sm:scale-100">
+			<div className="mt-2.5 w-[220px] overflow-hidden rounded-[10px] border border-line bg-surface">
+				<div className="flex h-[26px] items-center gap-1 border-b border-line px-2.5">
+					<span className="size-[7px] rounded-full bg-[#FF5F57]" />
+					<span className="size-[7px] rounded-full bg-[#FEBC2E]" />
+					<span className="size-[7px] rounded-full bg-[#28C840]" />
+				</div>
+				<div className="flex flex-col gap-2 p-3.5 pt-[13px]">
+					<span className="h-2.5 w-[120px] rounded-full bg-ink/15" />
+					<span className="h-[7px] w-[170px] rounded-full bg-ink/[0.08]" />
+					<span className="h-[7px] w-[150px] rounded-full bg-ink/[0.08]" />
+					<span className="mt-3 flex items-center justify-between">
+						<span className="h-6 w-20 rounded-md bg-blue" />
+						<span className="font-mono text-[10px] text-ink/45">next.js</span>
+					</span>
+				</div>
+			</div>
+			<div className="flex flex-col items-center gap-1.5">
+				<div className="flex h-40 w-[78px] flex-col gap-2 rounded-2xl border border-line bg-surface p-2.5">
+					<span className="mx-auto h-[5px] w-[26px] rounded-full bg-ink/15" />
+					<span className="h-[34px] rounded-md bg-ink/[0.08]" />
+					<span className="h-1.5 w-[46px] rounded-full bg-ink/15" />
+					<span className="h-1.5 w-9 rounded-full bg-ink/[0.08]" />
+					<span className="mt-auto h-5 rounded-md bg-blue" />
+				</div>
+				<span className="font-mono text-[10px] text-ink/45">expo</span>
+			</div>
+			<div className="mt-[22px] flex w-[130px] flex-col gap-2 rounded-[10px] border border-line bg-surface-2 p-3 font-mono text-[10px]">
+				<span className="text-ink/70">GET&nbsp; /students</span>
+				<span className="text-ink/70">POST /attendance</span>
+				<span className="text-ink/40">GET&nbsp; /health</span>
+				<span className="mt-1.5 text-live">200 OK</span>
+			</div>
+		</div>
 	);
 }
