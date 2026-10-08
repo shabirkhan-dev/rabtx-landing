@@ -1,7 +1,7 @@
 import { LogoTile, Mark, Wordmark } from "./logo";
 import { Pill } from "./ui";
 
-const EMAIL = "mailto:shabirkhan.dev@gmail.com";
+const EMAIL = "mailto:shabir@rabtx.dev";
 
 const LINKS = [
 	["Products", "#products"],
