@@ -1,0 +1,55 @@
+@import "tailwindcss";
+
+:root {
+	--bg: #efefef;
+	--surface: #ffffff;
+	--surface-2: #f6f6f6;
+	--ink: #222222;
+	--inv: #f2f2f2;
+	--line: rgb(0 0 0 / 0.09);
+	--faded: #e0e0e0;
+	--word: #b5b5b5;
+	--code: #5a5a5a;
+}
+
+@media (prefers-color-scheme: dark) {
+	:root {
+		--bg: #111111;
+		--surface: #1c1c1c;
+		--surface-2: #151515;
+		--ink: #f2f2f2;
+		--inv: #111111;
+		--line: rgb(255 255 255 / 0.08);
+		--faded: #1c1c1c;
+		--word: #555555;
+		--code: #a8a8a8;
+	}
+}
+
+@theme inline {
+	--color-bg: var(--bg);
+	--color-surface: var(--surface);
+	--color-surface-2: var(--surface-2);
+	--color-ink: var(--ink);
+	--color-inv: var(--inv);
+	--color-line: var(--line);
+	--color-faded: var(--faded);
+	--color-word: var(--word);
+	--color-code: var(--code);
+	--color-blue: #2d7cf6;
+	--color-claude: #d97757;
+	--color-live: #22a55b;
+	--font-sans: var(--font-inter);
+	--font-mono: var(--font-geist-mono);
+}
+
+body {
+	background: var(--bg);
+	color: var(--ink);
+}
+
+/* Dotted texture from the engineering frame; fade it with a mask per use */
+.dots {
+	background-image: radial-gradient(currentColor 0.8px, transparent 0.8px);
+	background-size: 5px 5px;
+}
