@@ -6,7 +6,7 @@ const EMAIL = "mailto:shabir@rabtx.dev";
 const LINKS = [
 	["Products", "#products"],
 	["How we work", "#how"],
-	["LinkedIn", "https://www.linkedin.com/in/shabirkhan23"],
+	["LinkedIn", "https://www.linkedin.com/company/rabtx/"],
 	["GitHub", "https://github.com/shabirkhan-dev"],
 	["Email", EMAIL],
 ];
