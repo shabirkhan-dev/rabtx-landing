@@ -1,28 +1,6 @@
-import type { ReactNode } from "react";
 import { LogoTile, Mark } from "./logo";
+import { PRODUCTS, ProductLogo } from "./product-logo";
 import { Pill } from "./ui";
-
-const PRODUCT_ICONS: Record<string, ReactNode> = {
-	Grid: <path d="M2 2h7v7H2zM11 2h7v7h-7zM2 11h7v7H2zM11 11h7v7h-7z" />,
-	"School OS": (
-		<>
-			<path d="M10 2L19 6.5L10 11L1 6.5Z" />
-			<path d="M4.5 9.2V14c0 1.6 2.5 3.4 5.5 3.4s5.5-1.8 5.5-3.4V9.2L10 12z" />
-		</>
-	),
-	Starter: (
-		<>
-			<path d="M10 1.5L18.5 6L10 10.5L1.5 6Z" />
-			<path d="M1.5 9.5L10 14L18.5 9.5V12.5L10 17L1.5 12.5Z" />
-		</>
-	),
-	"Rabtx UI": (
-		<>
-			<circle cx="6.5" cy="6.5" r="5" />
-			<rect x="8.5" y="8.5" width="10" height="10" rx="2.5" />
-		</>
-	),
-};
 
 /** Floating nav: logo tile, a links pill and the call-to-action pill. */
 export function Nav() {
@@ -77,14 +55,12 @@ export function Hero() {
 				Products we build and run
 			</h2>
 			<ul className="mt-8 flex max-w-[765px] flex-wrap items-center justify-center sm:mt-14">
-				{Object.entries(PRODUCT_ICONS).map(([name, icon]) => (
+				{PRODUCTS.map((name) => (
 					<li
 						key={name}
 						className="flex h-11 w-[153px] items-center justify-center gap-2 text-[22px] font-bold tracking-[-0.03em] text-word"
 					>
-						<svg viewBox="0 0 20 20" fill="currentColor" aria-hidden className="size-5">
-							{icon}
-						</svg>
+						<ProductLogo name={name} className="size-[22px]" />
 						{name}
 					</li>
 				))}
