@@ -8,6 +8,7 @@ const LINKS = [
 	["Products", "/#products"],
 	["How we work", "/#how"],
 	["Writing", "/#writing"],
+	["About", "/#about"],
 	["LinkedIn", "https://www.linkedin.com/company/rabtx/"],
 	["GitHub", "https://github.com/shabirkhan-dev"],
 	["Email", EMAIL],
