@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Analytics } from "@vercel/analytics/next";
 import { Geist_Mono, Inter } from "next/font/google";
 import { ThemeScript } from "@/components/theme-script";
-import { GITHUB_URL, LINKEDIN_URL } from "@/lib/site";
+import { FOUNDER, JsonLd, ORGANIZATION } from "@/lib/schema";
 import "./globals.css";
 
 const inter = Inter({
@@ -34,29 +34,14 @@ export const viewport: Viewport = {
 	],
 };
 
-// Tells search engines who runs the site and where else RabtX lives.
-const ORGANIZATION = {
-	"@context": "https://schema.org",
-	"@type": "Organization",
-	name: "RabtX",
-	url: "https://rabtx.dev",
-	logo: "https://rabtx.dev/apple-icon.png",
-	email: "shabir@rabtx.dev",
-	founder: { "@type": "Person", name: "Shabir Khan", url: "https://shabirkhan.dev" },
-	address: { "@type": "PostalAddress", addressLocality: "Islamabad", addressCountry: "PK" },
-	sameAs: [LINKEDIN_URL, GITHUB_URL],
-};
-
 export default function RootLayout({ children }: LayoutProps<"/">) {
 	return (
 		// The theme script sets data-theme before React loads, so the attribute can differ from the server render.
 		<html lang="en" suppressHydrationWarning className={`${inter.variable} ${geistMono.variable} antialiased`}>
 			<head>
 				<ThemeScript />
-				<script
-					type="application/ld+json"
-					dangerouslySetInnerHTML={{ __html: JSON.stringify(ORGANIZATION) }}
-				/>
+				{/* Tells search engines who runs the site and where else RabtX lives. */}
+				<JsonLd nodes={[ORGANIZATION, FOUNDER]} />
 			</head>
 			<body className="min-h-dvh font-sans">
 				{children}

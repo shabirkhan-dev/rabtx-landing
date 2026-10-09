@@ -6,9 +6,9 @@ import { Pill } from "./ui";
 export const EMAIL = "mailto:shabir@rabtx.dev";
 
 const LINKS = [
-	["Products", "/#products"],
+	["Products", "/products"],
 	["How we work", "/#how"],
-	["Writing", "/#writing"],
+	["Writing", "/writing"],
 	["About", "/#about"],
 	["LinkedIn", LINKEDIN_URL],
 	["GitHub", GITHUB_URL],
