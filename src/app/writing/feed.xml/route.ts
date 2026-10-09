@@ -11,7 +11,7 @@ function xml(text: string) {
  * they are written once, here, and linked from both sites.
  */
 export async function GET() {
-	const posts = (await getPosts()).toSorted((a, b) => b.publishedAt.localeCompare(a.publishedAt));
+	const posts = await getPosts();
 	const items = posts
 		.map((post) => {
 			const url = `${SITE_URL}/writing/${post.slug}`;

@@ -3,7 +3,6 @@ title: "Building multi-tenant admin systems"
 slug: building-multi-tenant-admin-systems
 excerpt: "Tenancy models, permissions and data isolation when one codebase serves many customers"
 standfirst: "Multi-tenant is not a database flag. It is a product architecture that either protects customers or slowly mixes them together"
-order: 1
 publishedAt: 2026-07-02
 thumbnail: /writing/grid-board.png
 ---

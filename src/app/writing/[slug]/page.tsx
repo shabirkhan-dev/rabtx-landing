@@ -1,13 +1,16 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Footer, EMAIL } from "@/components/footer";
+import { Footer } from "@/components/footer";
 import { Nav } from "@/components/hero";
 import { PostBody } from "@/components/post-body";
+import { PostList } from "@/components/post-list";
+import { ProductLogo } from "@/components/product-logo";
 import { formatPostDate, getPost, getPosts } from "@/lib/posts";
 import { PRODUCTS } from "@/lib/products";
 import { breadcrumbs, FOUNDER_ID, JsonLd, ORGANIZATION_ID } from "@/lib/schema";
-import { SITE_URL } from "@/lib/site";
+import { FOUNDER_LINKS, SITE_URL } from "@/lib/site";
 
 export async function generateStaticParams() {
 	return (await getPosts()).map((post) => ({ slug: post.slug }));
@@ -56,6 +59,7 @@ export default async function PostPage(props: PageProps<"/writing/[slug]">) {
 		[post.title, `/writing/${post.slug}`],
 	]);
 	const related = PRODUCTS.filter((p) => p.posts.includes(post.slug));
+	const more = (await getPosts()).filter((p) => p.slug !== post.slug).slice(0, 2);
 
 	return (
 		<>
@@ -83,27 +87,46 @@ export default async function PostPage(props: PageProps<"/writing/[slug]">) {
 						<PostBody markdown={post.body} />
 					</div>
 				</article>
-				{related.length > 0 && (
-					<aside className="mt-12 border-t border-line pt-8">
-						<h2 className="text-sm font-semibold text-subtle">Built with this</h2>
-						<ul className="mt-3 flex flex-col gap-2">
-							{related.map((p) => (
-								<li key={p.slug}>
-									<Link href={`/products/${p.slug}`} className="text-[17px] font-semibold hover:text-accent-ink">
-										{p.name}
-									</Link>{" "}
-									<span className="text-muted">— {p.desc}</span>
-								</li>
-							))}
-						</ul>
-					</aside>
-				)}
-				<a
-					href={`${EMAIL}?subject=${encodeURIComponent(post.title)}`}
-					className="mt-12 inline-flex h-[42px] items-center rounded-full bg-ink px-5 text-sm font-semibold text-inv transition-opacity hover:opacity-85"
-				>
-					Talk to us about this
-				</a>
+				<footer className="mt-16 flex flex-col gap-10">
+					{/* Who wrote it: a face and a role make a post more credible to readers and to search engines. */}
+					<div className="flex items-center gap-4 rounded-[20px] border border-line bg-surface p-5">
+						<Image src="/avatar.png" alt="" width={112} height={112} className="size-14 shrink-0 rounded-2xl object-cover" />
+						<div className="min-w-0 flex-1">
+							<p className="text-[15px] font-semibold">Shabir Khan</p>
+							<p className="text-sm text-muted">Founder and lead engineer at RabtX</p>
+						</div>
+						<a
+							href={FOUNDER_LINKS.linkedin}
+							target="_blank"
+							rel="noreferrer author"
+							className="shrink-0 rounded-full border border-line px-3 py-1.5 text-xs font-semibold transition-opacity hover:opacity-75"
+						>
+							LinkedIn
+						</a>
+					</div>
+
+					{related.map((p) => (
+						<Link
+							key={p.slug}
+							href={`/products/${p.slug}`}
+							className="group flex items-start gap-4 rounded-[20px] border border-line p-5 transition-colors hover:border-ink/20"
+						>
+							<ProductLogo name={p.name} className="mt-0.5 size-7" />
+							<span className="flex-1">
+								<span className="block text-xs font-medium text-subtle">Built with this</span>
+								<span className="mt-1 block text-[17px] font-semibold group-hover:text-accent-ink">{p.name}</span>
+								<span className="mt-1 block text-[15px] leading-[23px] text-muted">{p.desc}</span>
+							</span>
+						</Link>
+					))}
+
+					{more.length > 0 && (
+						<section>
+							<h2 className="text-sm font-semibold text-subtle">Keep reading</h2>
+							<PostList posts={more} className="mt-3" />
+						</section>
+					)}
+				</footer>
 			</main>
 			<Footer />
 		</>
