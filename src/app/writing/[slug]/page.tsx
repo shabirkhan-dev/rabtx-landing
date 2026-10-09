@@ -7,7 +7,6 @@ import { PostBody } from "@/components/post-body";
 import { formatPostDate, getPost, getPosts } from "@/lib/posts";
 import { PRODUCTS } from "@/lib/products";
 import { breadcrumbs, FOUNDER_ID, JsonLd, ORGANIZATION_ID } from "@/lib/schema";
-import { SHARE_IMAGE } from "@/lib/share-image";
 import { SITE_URL } from "@/lib/site";
 
 export async function generateStaticParams() {
@@ -29,9 +28,8 @@ export async function generateMetadata(props: PageProps<"/writing/[slug]">): Pro
 			url: `/writing/${post.slug}`,
 			siteName: "RabtX",
 			publishedTime: post.publishedAt,
-			images: SHARE_IMAGE,
 		},
-		twitter: { card: "summary_large_image", title: post.title, description: post.standfirst, images: SHARE_IMAGE },
+		twitter: { card: "summary_large_image", title: post.title, description: post.standfirst },
 	};
 }
 
@@ -48,7 +46,7 @@ export default async function PostPage(props: PageProps<"/writing/[slug]">) {
 		datePublished: post.publishedAt,
 		url,
 		mainEntityOfPage: url,
-		image: `${SITE_URL}${SHARE_IMAGE.url}`,
+		image: `${url}/opengraph-image`,
 		author: { "@id": FOUNDER_ID },
 		publisher: { "@id": ORGANIZATION_ID },
 	};

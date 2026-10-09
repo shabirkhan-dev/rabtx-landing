@@ -6,7 +6,7 @@ export const SITE_URL = "https://rabtx.dev";
 
 /** Shabir's own profiles, for the founder section and the Person schema. */
 export const FOUNDER_LINKS = {
-	site: "https://shabirkhan.dev",
+	site: "https://shabirkhan.rabtx.dev",
 	linkedin: "https://www.linkedin.com/in/shabirkhan23",
 	github: "https://github.com/shabirkhan-dev",
 };

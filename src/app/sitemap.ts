@@ -25,6 +25,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 		{ url: "https://rabtx.dev/products", lastModified: newestProduct, changeFrequency: "monthly", priority: 0.9 },
 		...products,
 		{ url: "https://rabtx.dev/writing", lastModified: newestPost, changeFrequency: "monthly", priority: 0.7 },
+		{ url: "https://rabtx.dev/contact", changeFrequency: "yearly", priority: 0.5 },
 		...articles,
 	];
 }
