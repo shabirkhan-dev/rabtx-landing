@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { LogoTile, Mark } from "./logo";
-import { PRODUCTS, ProductLogo } from "./product-logo";
+import { PRODUCTS } from "@/lib/products";
+import { ProductLogo } from "./product-logo";
 import { ThemeToggle } from "./theme-toggle";
 import { Pill } from "./ui";
 
@@ -63,13 +64,15 @@ export function Hero() {
 				Our products
 			</h2>
 			<ul className="mt-8 flex max-w-[765px] flex-wrap items-center justify-center sm:mt-14">
-				{PRODUCTS.map((name) => (
-					<li
-						key={name}
-						className="flex h-11 w-[153px] items-center justify-center gap-2 text-[22px] font-bold tracking-[-0.03em] text-word"
-					>
-						<ProductLogo name={name} className="size-[22px]" />
-						{name}
+				{PRODUCTS.map((p) => (
+					<li key={p.slug} className="flex h-11 w-[153px] items-center justify-center">
+						<Link
+							href={`/products/${p.slug}`}
+							className="flex items-center gap-2 text-[22px] font-bold tracking-[-0.03em] text-word transition-colors hover:text-ink"
+						>
+							<ProductLogo name={p.name} className="size-[22px]" />
+							{p.name}
+						</Link>
 					</li>
 				))}
 				<li className="flex h-11 w-[153px] items-center justify-center">
