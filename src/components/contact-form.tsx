@@ -5,7 +5,7 @@ import { useActionState, useEffect } from "react";
 import { type ContactState, sendEnquiry } from "@/app/contact/actions";
 
 const input =
-	"w-full rounded-xl border border-line bg-surface px-4 py-3 text-[15px] text-ink placeholder:text-subtle focus:border-ink/40 focus:outline-none";
+	"w-full rounded-xl border border-line bg-surface px-4 py-3 text-[15px] text-ink outline-none transition-[border-color,box-shadow] placeholder:text-subtle focus:border-ink/40 focus:ring-4 focus:ring-ink/[0.06] aria-invalid:border-red-600/60";
 const label = "text-sm font-medium";
 
 const BUDGETS = ["Not sure yet", "Under $5k", "$5k–$15k", "$15k–$50k", "$50k+"];
@@ -76,12 +76,28 @@ export function ContactForm() {
 					<span className={label}>
 						Budget <span className="font-normal text-subtle">(optional)</span>
 					</span>
-					<select name="budget" defaultValue={values?.budget ?? ""} className={input}>
-						<option value="">Choose one</option>
-						{BUDGETS.map((b) => (
-							<option key={b}>{b}</option>
-						))}
-					</select>
+					<div className="relative">
+						<select
+							name="budget"
+							defaultValue={values?.budget ?? ""}
+							className={`${input} cursor-pointer appearance-none pr-11`}
+						>
+							<option value="">Choose one</option>
+							{BUDGETS.map((b) => (
+								<option key={b}>{b}</option>
+							))}
+						</select>
+						<svg
+							viewBox="0 0 16 16"
+							aria-hidden
+							className="pointer-events-none absolute right-4 top-1/2 size-4 -translate-y-1/2 text-muted"
+							fill="none"
+							stroke="currentColor"
+							strokeWidth="1.5"
+						>
+							<path strokeLinecap="round" strokeLinejoin="round" d="M4 6l4 4 4-4" />
+						</svg>
+					</div>
 				</label>
 			</div>
 			<label className="flex flex-col gap-2">
@@ -93,7 +109,7 @@ export function ContactForm() {
 					rows={5}
 					aria-invalid={!!errors.message}
 					aria-describedby={errors.message ? "message-error" : undefined}
-					className={input}
+					className={`${input} resize-none`}
 				/>
 				{errors.message && <span id="message-error" className="text-sm text-red-600">{errors.message}</span>}
 			</label>
