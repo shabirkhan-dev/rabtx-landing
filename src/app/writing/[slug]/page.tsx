@@ -5,6 +5,7 @@ import { Footer, EMAIL } from "@/components/footer";
 import { Nav } from "@/components/hero";
 import { PostBody } from "@/components/post-body";
 import { formatPostDate, getPost, getPosts } from "@/lib/posts";
+import { SHARE_IMAGE } from "@/lib/share-image";
 
 export async function generateStaticParams() {
 	return (await getPosts()).map((post) => ({ slug: post.slug }));
@@ -18,7 +19,16 @@ export async function generateMetadata(props: PageProps<"/writing/[slug]">): Pro
 		title: `${post.title} — RabtX`,
 		description: post.standfirst,
 		alternates: { canonical: `/writing/${post.slug}` },
-		openGraph: { title: post.title, description: post.standfirst, type: "article", url: `/writing/${post.slug}` },
+		openGraph: {
+			title: post.title,
+			description: post.standfirst,
+			type: "article",
+			url: `/writing/${post.slug}`,
+			siteName: "RabtX",
+			publishedTime: post.publishedAt,
+			images: SHARE_IMAGE,
+		},
+		twitter: { card: "summary_large_image", title: post.title, description: post.standfirst, images: SHARE_IMAGE },
 	};
 }
 
