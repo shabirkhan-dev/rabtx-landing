@@ -54,7 +54,7 @@ export const PRODUCTS: Product[] = [
 			"The console is a Solid 2 single-page app built for speed. The API is Hono on Bun with PostgreSQL, and a small runner on each machine that holds a project streams agent and terminal work back to the console.",
 			"Grid is open source under MIT or Apache-2.0. Its own site has the install guide and the docs.",
 		],
-		posts: ["make-shipping-boring-on-purpose"],
+		posts: ["building-grid-with-the-agents-it-runs", "make-shipping-boring-on-purpose"],
 		facts: [
 			["Stack", "SolidJS, Hono, PostgreSQL, Bun"],
 			["Status", "Open-source beta"],

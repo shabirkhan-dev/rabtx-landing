@@ -73,7 +73,7 @@ export default async function PostPage(props: PageProps<"/writing/[slug]">) {
 				</Link>
 				<JsonLd nodes={[article, trail]} />
 				<article className="mt-10">
-					<header className="border-b border-line pb-10">
+					<header>
 						<p className="font-mono text-xs text-subtle">
 							<time dateTime={post.publishedAt}>{formatPostDate(post.publishedAt)}</time> · {post.readingTime} ·{" "}
 							<Link href="/#about" rel="author" className="hover:text-ink">
@@ -83,6 +83,17 @@ export default async function PostPage(props: PageProps<"/writing/[slug]">) {
 						<h1 className="mt-4 text-[32px] font-bold leading-[1.1] tracking-[-0.035em] sm:text-[44px]">{post.title}</h1>
 						<p className="mt-4 text-lg leading-7 text-muted">{post.standfirst}</p>
 					</header>
+					{post.cover && (
+						<Image
+							src={post.cover}
+							alt=""
+							width={1440}
+							height={900}
+							priority
+							sizes="(min-width: 712px) 680px, 100vw"
+							className="mt-10 aspect-[16/10] w-full rounded-[20px] border border-line object-cover object-left-top"
+						/>
+					)}
 					<div className="pt-10">
 						<PostBody markdown={post.body} />
 					</div>

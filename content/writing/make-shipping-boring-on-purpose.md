@@ -4,6 +4,7 @@ slug: make-shipping-boring-on-purpose
 excerpt: "Why CI, security checks and typed config should be unavoidable and dull"
 standfirst: "The best release process is the one nobody has to heroically remember."
 publishedAt: 2026-05-08
+cover: /writing/make-shipping-boring-on-purpose.jpg
 ---
 
 ::lead I care about the merge button more than the launch tweet. If shipping depends on one person’s laptop and a checklist in Slack, you do not have a delivery system — you have folklore.
