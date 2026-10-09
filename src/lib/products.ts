@@ -45,6 +45,7 @@ export const PRODUCTS: Product[] = [
 			"/projects/grid-pr.webp",
 			"/projects/grid-ship.webp",
 		],
+		github: "https://github.com/rabtx/grid",
 		live: "https://grid.rabtx.dev",
 	},
 	{
@@ -66,7 +67,7 @@ export const PRODUCTS: Product[] = [
 			["Started", "2025"],
 		],
 		screens: ["/projects/school-os.webp", "/projects/school-os-students.webp"],
-		github: "https://github.com/shabirkhan-dev/school-os",
+		github: "https://github.com/rabtx/school-os",
 	},
 	{
 		name: "Starter",
@@ -86,7 +87,7 @@ export const PRODUCTS: Product[] = [
 			["Started", "2025"],
 		],
 		screens: ["/projects/starter.webp"],
-		github: "https://github.com/shabirkhan-dev/starter",
+		github: "https://github.com/rabtx/starter",
 		live: "https://starter-two-henna.vercel.app",
 	},
 ];
