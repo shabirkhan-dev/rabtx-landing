@@ -26,7 +26,7 @@ export function Nav() {
 						How we work
 					</Link>
 				</div>
-				<Pill href="#contact" variant="secondary" size="sm">
+				<Pill href="/contact" variant="secondary" size="sm">
 					Start a project
 				</Pill>
 				<ThemeToggle />
@@ -54,7 +54,7 @@ export function Hero() {
 				We build our own products and run them,<br className="hidden sm:inline" /> from the interface to the model calls.
 			</p>
 			<div className="mt-[38px] flex flex-wrap justify-center gap-1.5">
-				<Pill href="#contact">Start a project</Pill>
+				<Pill href="/contact">Start a project</Pill>
 				<Pill href="#products" variant="secondary">
 					See our products
 				</Pill>

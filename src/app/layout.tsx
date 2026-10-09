@@ -42,6 +42,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
 				<ThemeScript />
 				{/* Tells search engines who runs the site and where else RabtX lives. */}
 				<JsonLd nodes={[ORGANIZATION, FOUNDER]} />
+				{/* Lets feed readers find the writing feed from any page. A page's own `alternates` (its canonical) would replace one set in metadata. */}
+				<link rel="alternate" type="application/rss+xml" title="RabtX — Writing" href="/writing/feed.xml" />
 			</head>
 			<body className="min-h-dvh font-sans">
 				{children}

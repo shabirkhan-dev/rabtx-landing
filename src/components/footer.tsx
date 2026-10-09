@@ -27,7 +27,7 @@ export function Footer() {
 				</h2>
 				<p className="mt-[18px] text-[17px] leading-6 text-muted">Tell us what you&rsquo;re building.</p>
 				<div className="mt-[38px] flex flex-wrap justify-center gap-1.5">
-					<Pill href={EMAIL}>Start a project</Pill>
+					<Pill href="/contact">Start a project</Pill>
 					<Pill href="/#products" variant="secondary">
 						See our products
 					</Pill>
