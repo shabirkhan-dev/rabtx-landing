@@ -25,7 +25,7 @@ export const PRODUCTS: Product[] = [
 		slug: "grid",
 		updatedAt: "2026-10-09",
 		label: "Agent workspace",
-		status: { label: "Open-source pre-beta", tone: "blue" },
+		status: { label: "Open-source beta", tone: "blue" },
 		desc: "A workspace where AI agents take tasks, work in their own environment and open pull requests.",
 		stack: "SolidJS · Hono · Bun · PostgreSQL",
 		category: "DeveloperApplication",
@@ -35,7 +35,7 @@ export const PRODUCTS: Product[] = [
 		],
 		facts: [
 			["Stack", "SolidJS, Hono, PostgreSQL, Bun"],
-			["Status", "Open-source pre-beta"],
+			["Status", "Open-source beta"],
 			["Started", "2025"],
 		],
 		screens: [
