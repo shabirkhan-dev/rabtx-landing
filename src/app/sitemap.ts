@@ -18,9 +18,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 	}));
 	// The home page shows every product and post, so it changed when the newest of them did.
 	const homeModified = [...products, ...articles].map((e) => new Date(e.lastModified)).reduce((a, b) => (a > b ? a : b));
+	const newestPost = articles.map((e) => e.lastModified).reduce((a, b) => (a > b ? a : b));
+	const newestProduct = products.map((e) => e.lastModified).reduce((a, b) => (a > b ? a : b));
 	return [
 		{ url: "https://rabtx.dev/", lastModified: homeModified, changeFrequency: "monthly", priority: 1 },
+		{ url: "https://rabtx.dev/products", lastModified: newestProduct, changeFrequency: "monthly", priority: 0.9 },
 		...products,
+		{ url: "https://rabtx.dev/writing", lastModified: newestPost, changeFrequency: "monthly", priority: 0.7 },
 		...articles,
 	];
 }
