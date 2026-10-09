@@ -12,6 +12,8 @@ export type Post = {
 	standfirst: string;
 	publishedAt: string;
 	readingTime: string;
+	/** A 1440x900 screenshot in public/writing, shown in lists, on the post and in its share image. */
+	cover?: string;
 	body: string;
 };
 
@@ -21,6 +23,7 @@ type Frontmatter = {
 	excerpt?: string;
 	standfirst?: string;
 	publishedAt?: string | Date;
+	cover?: string;
 };
 
 function readingTime(markdown: string) {
@@ -40,6 +43,7 @@ function toPost(filename: string, raw: string) {
 		standfirst: fm.standfirst ?? fm.excerpt ?? "",
 		publishedAt: (fm.publishedAt ? new Date(fm.publishedAt) : new Date(0)).toISOString(),
 		readingTime: readingTime(body),
+		cover: fm.cover,
 		body,
 	};
 	return post;

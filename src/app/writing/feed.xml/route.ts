@@ -22,13 +22,15 @@ export async function GET() {
 			<guid isPermaLink="true">${url}</guid>
 			<pubDate>${new Date(post.publishedAt).toUTCString()}</pubDate>
 			<description>${xml(post.standfirst || post.excerpt)}</description>
-			<author>shabir@rabtx.dev (Shabir Khan)</author>
+			<author>shabir@rabtx.dev (Shabir Khan)</author>${
+				post.cover ? `\n\t\t\t<media:content url="${SITE_URL}${post.cover}" medium="image" type="image/jpeg" />` : ""
+			}
 		</item>`;
 		})
 		.join("");
 
 	const body = `<?xml version="1.0" encoding="UTF-8"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:media="http://search.yahoo.com/mrss/">
 	<channel>
 		<title>RabtX — Writing</title>
 		<link>${SITE_URL}/writing</link>
