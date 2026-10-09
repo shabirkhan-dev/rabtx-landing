@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Analytics } from "@vercel/analytics/next";
 import { Geist_Mono, Inter } from "next/font/google";
 import { ThemeScript } from "@/components/theme-script";
+import { GITHUB_URL, LINKEDIN_URL } from "@/lib/site";
 import "./globals.css";
 
 const inter = Inter({
@@ -43,7 +44,7 @@ const ORGANIZATION = {
 	email: "shabir@rabtx.dev",
 	founder: { "@type": "Person", name: "Shabir Khan", url: "https://shabirkhan.dev" },
 	address: { "@type": "PostalAddress", addressLocality: "Islamabad", addressCountry: "PK" },
-	sameAs: ["https://www.linkedin.com/company/rabtx/", "https://github.com/shabirkhan-dev"],
+	sameAs: [LINKEDIN_URL, GITHUB_URL],
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

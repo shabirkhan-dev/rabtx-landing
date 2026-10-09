@@ -7,7 +7,6 @@ import { ArrowIcon, GithubIcon } from "@/components/icons";
 import { ProductLogo } from "@/components/product-logo";
 import { ScreenshotCarousel } from "@/components/screenshot-carousel";
 import { getProduct, PRODUCTS, STATUS_TONE } from "@/lib/products";
-import { SHARE_IMAGE } from "@/lib/share-image";
 
 const pill =
 	"inline-flex items-center justify-center gap-2 rounded-full py-2.5 pl-4 pr-3.5 text-sm font-semibold transition-opacity hover:opacity-85";
@@ -22,12 +21,14 @@ export async function generateMetadata(props: PageProps<"/products/[slug]">): Pr
 	if (!product) return {};
 	const title = `${product.name} — ${product.label} by RabtX`;
 	const url = `/products/${product.slug}`;
+	// Built from the product's first screenshot by scripts/og-images.mjs.
+	const image = { url: `/og/${product.slug}.png`, width: 1200, height: 630, alt: `${product.name}, ${product.label.toLowerCase()} by RabtX` };
 	return {
 		title,
 		description: product.desc,
 		alternates: { canonical: url },
-		openGraph: { title, description: product.desc, url, siteName: "RabtX", type: "website", images: SHARE_IMAGE },
-		twitter: { card: "summary_large_image", title, description: product.desc, images: SHARE_IMAGE },
+		openGraph: { title, description: product.desc, url, siteName: "RabtX", type: "website", images: image },
+		twitter: { card: "summary_large_image", title, description: product.desc, images: image },
 	};
 }
 
@@ -43,7 +44,7 @@ export default async function ProductPage(props: PageProps<"/products/[slug]">) 
 		description: product.desc,
 		applicationCategory: product.category,
 		url: `https://rabtx.dev/products/${product.slug}`,
-		image: `https://rabtx.dev${product.screens[0]}`,
+		image: `https://rabtx.dev/og/${product.slug}.png`,
 		publisher: { "@type": "Organization", name: "RabtX", url: "https://rabtx.dev" },
 		sameAs: [product.live, product.github].filter(Boolean),
 	};
