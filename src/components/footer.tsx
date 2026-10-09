@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { LogoTile, Mark, Wordmark } from "./logo";
+import { GITHUB_URL, LINKEDIN_URL } from "@/lib/site";
 import { Pill } from "./ui";
 
 export const EMAIL = "mailto:shabir@rabtx.dev";
@@ -9,8 +10,8 @@ const LINKS = [
 	["How we work", "/#how"],
 	["Writing", "/#writing"],
 	["About", "/#about"],
-	["LinkedIn", "https://www.linkedin.com/company/rabtx/"],
-	["GitHub", "https://github.com/shabirkhan-dev"],
+	["LinkedIn", LINKEDIN_URL],
+	["GitHub", GITHUB_URL],
 	["Email", EMAIL],
 ];
 
