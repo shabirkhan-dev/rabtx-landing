@@ -20,7 +20,6 @@ type Frontmatter = {
 	slug?: string;
 	excerpt?: string;
 	standfirst?: string;
-	order?: number;
 	publishedAt?: string | Date;
 };
 
@@ -43,10 +42,10 @@ function toPost(filename: string, raw: string) {
 		readingTime: readingTime(body),
 		body,
 	};
-	return { post, order: fm.order ?? Number.MAX_SAFE_INTEGER };
+	return post;
 }
 
-/** Posts in their frontmatter `order`, then newest first. They are files in the repo, so cache them for good. */
+/** Posts newest first. They are files in the repo, so cache them for good. */
 export async function getPosts(): Promise<Post[]> {
 	"use cache";
 	cacheLife("max");
@@ -54,9 +53,7 @@ export async function getPosts(): Promise<Post[]> {
 	const entries = await Promise.all(
 		files.map(async (f) => toPost(f, await fs.readFile(path.join(CONTENT_DIR, f), "utf8"))),
 	);
-	return entries
-		.sort((a, b) => a.order - b.order || b.post.publishedAt.localeCompare(a.post.publishedAt))
-		.map((e) => e.post);
+	return entries.sort((a, b) => b.publishedAt.localeCompare(a.publishedAt));
 }
 
 export async function getPost(slug: string) {

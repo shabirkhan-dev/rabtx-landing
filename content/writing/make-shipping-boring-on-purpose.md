@@ -3,7 +3,6 @@ title: "Make shipping boring on purpose"
 slug: make-shipping-boring-on-purpose
 excerpt: "Why CI, security checks and typed config should be unavoidable and dull"
 standfirst: "The best release process is the one nobody has to heroically remember."
-order: 3
 publishedAt: 2026-05-08
 ---
 
