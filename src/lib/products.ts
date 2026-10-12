@@ -31,7 +31,7 @@ export const PRODUCTS: Product[] = [
 	{
 		name: "Grid",
 		slug: "grid",
-		updatedAt: "2026-10-09",
+		updatedAt: "2026-10-12",
 		label: "Agent workspace",
 		status: { label: "Open-source beta", tone: "blue" },
 		desc: "A workspace where AI agents take tasks, work in their own environment and open pull requests.",
@@ -54,7 +54,7 @@ export const PRODUCTS: Product[] = [
 			"The console is a Solid 2 single-page app built for speed. The API is Hono on Bun with PostgreSQL, and a small runner on each machine that holds a project streams agent and terminal work back to the console.",
 			"Grid is open source under MIT or Apache-2.0. Its own site has the install guide and the docs.",
 		],
-		posts: ["building-grid-with-the-agents-it-runs", "make-shipping-boring-on-purpose"],
+		posts: ["building-grid-with-the-agents-it-runs", "make-shipping-boring-on-purpose", "ui-ux-design-in-the-ai-era"],
 		facts: [
 			["Stack", "SolidJS, Hono, PostgreSQL, Bun"],
 			["Status", "Open-source beta"],
@@ -73,7 +73,7 @@ export const PRODUCTS: Product[] = [
 	{
 		name: "School OS",
 		slug: "school-os",
-		updatedAt: "2026-10-09",
+		updatedAt: "2026-10-12",
 		label: "School platform",
 		status: { label: "Open source", tone: "green" },
 		desc: "Attendance, homework, guardians and WhatsApp messages for schools. Each school gets its own tenant.",
@@ -95,7 +95,7 @@ export const PRODUCTS: Product[] = [
 			"A Next.js admin app, an Expo mobile app and a NestJS API over PostgreSQL. Each school is its own tenant, so data never mixes between schools.",
 			"School OS is open source and in active development.",
 		],
-		posts: ["building-multi-tenant-admin-systems"],
+		posts: ["building-multi-tenant-admin-systems", "ui-ux-design-in-the-ai-era"],
 		facts: [
 			["Stack", "Next.js, Expo, NestJS, PostgreSQL"],
 			["Status", "In development"],
