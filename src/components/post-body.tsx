@@ -33,6 +33,21 @@ const components: Components = {
 	th: ({ children }) => <th className="border-b border-line py-2 pr-4 font-semibold text-ink">{children}</th>,
 	td: ({ children }) => <td className="border-b border-line py-2 pr-4">{children}</td>,
 	hr: () => <hr className="border-line" />,
+	// Markdown wraps an image in a paragraph, so the frame and caption are spans laid out as blocks.
+	// `![alt](src "caption")`: the title becomes the caption under the screenshot.
+	img: ({ src, alt, title }) => (
+		<span className="my-2 block">
+			{/* eslint-disable-next-line @next/next/no-img-element -- Markdown images have no known size for next/image */}
+			<img
+				src={typeof src === "string" ? src : undefined}
+				alt={alt ?? ""}
+				loading="lazy"
+				decoding="async"
+				className="block h-auto w-full rounded-[20px] border border-line"
+			/>
+			{title && <span className="mt-3 block text-sm leading-6 text-subtle">{title}</span>}
+		</span>
+	),
 };
 
 /** Drops the old site's custom markers (`::lead`, `> [!NOTE]`) so posts read as plain prose. */
