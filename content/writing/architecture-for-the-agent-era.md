@@ -1,7 +1,7 @@
 ---
 title: "Architecting a project for the agent era"
 slug: architecture-for-the-agent-era
-excerpt: "Domains, modules, contracts, the agent board, the checks on every commit, and CI/CD, explained point by point"
+excerpt: "Domains, modules, contracts, the agent board, skills, the checks on every commit, and CI/CD, explained point by point"
 standfirst: "When coding agents write most of the code, the way you structure a project matters more than ever. Here is how I set up RabtX Starter and Grid, piece by piece, and why each piece is there."
 publishedAt: 2026-10-12
 cover: /writing/architecture-for-the-agent-era.jpg
@@ -171,7 +171,35 @@ The contract for agents even sorts mistakes by how serious they are. A genuine b
 
 **Why all this:** most bad agent work I have seen is not bad code. It is **drive-by changes**: a refactor nobody asked for, a file reformatted, a test quietly loosened. A clear scope and a different reviewer stop that before it starts.
 
-## 7. The checks on every commit, and why
+## 7. Skills: teach agents once, not every time
+
+A **skill** is a short guide an agent loads when it starts a certain kind of job. It is a folder with a `SKILL.md` file inside. At the top, a name and a description say *when* to use it. Below that come the instructions: the rules, the right patterns, the mistakes to avoid and where the real source of truth lives.
+
+```yaml filename=".agents/skills/solid-2/SKILL.md (top, trimmed)"
+name: solid-2
+description: >-
+  Use for any code in apps/console or any other Solid code in Grid. Grid runs Solid 2.
+  Lists the Solid 1.x APIs that are removed or deprecated and their 2.0 replacements,
+  plus the idioms to follow.
+```
+
+**Why skills exist:** an AI model's training data is always a little out of date, and it knows nothing about your project's own rules. Grid's console runs Solid 2, but most of what models learned describes Solid 1. Without help, an agent writes old code that looks right and does not work. The `solid-2` skill lists every removed API, its replacement, and tells the agent to trust the installed type definitions over its memory. One file fixes that mistake for every agent, forever.
+
+All skills live in one place, `.agents/skills/`, and there are two kinds:
+
+- **Our own skills** are project rules, and every agent doing that kind of work must follow them. In Grid there are three: `solid-2` for any console code, `mobile-first` for any UI (phone layout first, then desktop on top, in one component), and `browser-ui-test` for checking interactive UI in a real browser.
+- **Vendored skills** are copied from other projects for good advice: shadcn components, NestJS best practices, Rust guidelines and more. They are installed with `bunx skills add <repo> --skill <name>`, and `skills-lock.json` pins each one to its source and a content hash, so nobody can change them quietly. Agents read them for guidance, but they are not project policy.
+
+`AGENTS.md` points to the skills that matter ("read the solid-2 skill before any Solid work"), and the agent loads them only when the job needs them. That keeps every agent's context small and focused.
+
+Tips for writing good skills:
+
+- **Make the description say when to use it,** with the words an agent will see in the task: file paths, library names, keywords.
+- **Point to the real source of truth,** like the installed typings or the official changelog, instead of copying docs that will go stale.
+- **One skill per job.** A short, focused skill gets followed. A long one gets skimmed.
+- **Turn repeated review comments into skills.** If you correct agents about the same thing twice, write it down once.
+
+## 8. The checks on every commit, and why
 
 Every commit runs a set of checks first, using git hooks (Lefthook). If any check fails, the commit does not happen. Here is each one, and the reason it exists:
 
@@ -205,7 +233,7 @@ Before pushing, there is one more command: `bun run preflight`, which runs lint,
 
 **Why run checks on every commit, not just in CI?** Speed. An agent that breaks a rule hears about it in seconds, with the exact file and line, and fixes it right away. Without the hook it finds out ten minutes later in CI, or a day later in review, when it has long moved on.
 
-## 8. CI: every pull request proves itself
+## 9. CI: every pull request proves itself
 
 Nothing goes into `main` directly. Every pull request runs the full CI pipeline on GitHub Actions:
 
@@ -222,7 +250,7 @@ Two small settings make a big difference. CI installs with a frozen lockfile, so
 
 **Why this matters for agents:** CI is the referee nobody can argue with. An agent cannot say "it works" when the build is red. And because CI is the same for every agent and every human, the bar is the same for everyone.
 
-## 9. CD: shipping without heroics
+## 10. CD: shipping without heroics
 
 Deploying follows the same idea: make it automatic, make it boring, and make it easy to check. Starter ships this pipeline with the deploy steps left for each project to fill in; Grid fills them in like this:
 
@@ -233,7 +261,7 @@ Deploying follows the same idea: make it automatic, make it boring, and make it 
 
 **Why tags for production?** Because a merge is "this code is ready", while a release is "we choose to ship this now". Keeping those two decisions apart means an agent's merged pull request can never reach your users on its own.
 
-## 10. Check the settings once, at startup
+## 11. Check the settings once, at startup
 
 Settings (environment variables) are one of the most common ways a working change breaks in production, and agents add new ones freely. So every setting is checked against a schema once, when the app starts:
 
@@ -252,7 +280,7 @@ export const envSchema = z
 
 The rest of the app reads typed settings through one config service. A missing or wrong value stops the app at startup with a clear message, instead of turning into a strange bug three requests later. And when an agent needs a new setting, there is exactly one place to add it.
 
-## 11. One home for every truth
+## 12. One home for every truth
 
 Nothing confuses an agent faster than two documents that disagree. So each kind of truth has exactly one home, and everything else links to it:
 
@@ -267,7 +295,7 @@ Nothing confuses an agent faster than two documents that disagree. So each kind 
 
 If a document and the code disagree, that is a bug, and it gets fixed the same day. The next agent will believe whichever one it reads first.
 
-## 12. Strong defaults, with a way out
+## 13. Strong defaults, with a way out
 
 None of this is meant to be a cage. Starter's very first architecture decision says it plainly: **strong defaults, enforced by checks, with a written way to override them.** If a project needs to break a rule, it writes down why in `/docs/overrides`. A project can also add its own, stricter rules on top.
 
@@ -284,6 +312,7 @@ That is how one starter became very different products. Grid swapped the API fra
 - Contract tests that call the real API over HTTP.
 - A board of cards with roles, an ownership map, a narrow scope and a different reviewer.
 - One branch and one worktree per card.
+- Skills for the jobs agents get wrong, with the project's own skills kept apart from vendored ones.
 - Checks on every commit: format, lint, typecheck, architecture, large files, secrets, commit message.
 - CI on every pull request: lint, typecheck, build, tests, contract, end-to-end, security.
 - Staging on every merge, production only on a tag, with health checks after both.
