@@ -1,91 +1,241 @@
 ---
 title: "Architecting a project for the agent era"
 slug: architecture-for-the-agent-era
-excerpt: "How I structure a codebase so coding agents can read it, change it and not break it"
-standfirst: "When agents write most of the code, the architecture stops being a diagram in someone's head. It becomes the instructions every agent reads before it touches a file. These are the patterns from RabtX Starter and Grid that make that work."
+excerpt: "Domains, modules, contracts, the agent board, the checks on every commit, and CI/CD, explained point by point"
+standfirst: "When coding agents write most of the code, the way you structure a project matters more than ever. Here is how I set up RabtX Starter and Grid, piece by piece, and why each piece is there."
 publishedAt: 2026-10-12
 cover: /writing/architecture-for-the-agent-era.jpg
 ---
 
-::lead A coding agent does not remember your last architecture meeting. It opens the repository cold, reads what it can find, and copies the patterns it sees. So the structure of the codebase is now the most important prompt you will ever write. Every project at RabtX starts from the same monorepo, RabtX Starter, and Grid grew out of it. This is the architecture they share and why each piece is there.
+::lead An AI agent does not remember last week's meeting. Every time it starts, it opens the project fresh, reads what it can find, and copies the patterns it sees. If the project is messy, the agent makes more mess, only faster. If the project is clear, the agent follows it. So today, good architecture is not only for people. It is the set of instructions every agent reads before it touches your code.
 
-## Architecture is now the prompt
+Every project at RabtX starts from the same monorepo, RabtX Starter, and Grid grew out of it. This post walks through how they are built, one piece at a time. For each piece I will say what it is, why it is there, and what it looks like in the real code.
 
-A human joining a team learns the unwritten rules over weeks: where things go, what not to import, which file is the real source of truth. An agent gets none of that. It has the files in front of it and the instructions you point it to, and it will happily invent a fourth way of doing something if the first three are not obvious.
+## The big idea
 
-That changes what good architecture means. It is no longer enough for the structure to be sensible. It has to be **legible** (an agent can find the right place for a change), **bounded** (a change in one place cannot quietly reach everywhere), and **enforced** (when a rule is broken, a machine says so before a person has to).
+Here is the whole post in three words: **clear, bounded, checked.**
 
-## The shape: one monorepo, thin apps, shared packages
+- **Clear:** an agent can quickly find where a change belongs.
+- **Bounded:** a change in one place cannot quietly break something somewhere else.
+- **Checked:** when a rule is broken, a machine says so before a person has to.
 
-Starter is a Bun workspaces and Turborepo monorepo with every app and every shared package in one place:
+Everything below is one of those three ideas in practice.
+
+## 1. Start with domains, not folders
+
+Before any code, I split the product into **domains**. A domain is one area of the business with its own words and its own rules. In Grid the domains are things like auth, workspaces, projects, billing, notifications and the runner. In School OS they are students, guardians, attendance and messages.
+
+Each domain owns its own rules. For example, Grid's workspace domain says:
+
+- A workspace is the company. It owns projects and billing.
+- There are three roles: **owner**, **admin** and **member**.
+- A workspace always keeps at least one owner.
+- If you are not a member of a workspace, it answers `404`, exactly like one that does not exist.
+
+**Why this matters for agents:** when the rules have one home, an agent working on billing cannot accidentally break how workspaces work. And when you ask an agent to "add a role", it knows exactly which domain to open.
+
+I also start as a **modular monolith**: one deployable API, split inside into clean domain modules. It is simple to run and simple to debug. If one domain ever needs to become its own service, the boundary is already there, so you can cut along it.
+
+## 2. One repository for everything
+
+All apps and all shared code live in one monorepo, managed with Bun workspaces and Turborepo:
 
 ```text filename="rabtx starter"
 starter/
 ├── apps/
-│   ├── web/          # Next.js: routes, admin, auth, billing
-│   ├── mobile/       # Expo
-│   ├── nest-api/     # the API: modules, common HTTP pieces, validated config
+│   ├── web/          # Next.js web app
+│   ├── mobile/       # Expo app
+│   ├── nest-api/     # the API
 │   ├── docs/         # the only home for project docs
-│   ├── ai-api/       # optional FastAPI service, never public
+│   ├── ai-api/       # optional AI service, never public
 │   └── rust/         # optional Rust service
 ├── packages/
-│   ├── ui/           # primitives every app shares
-│   ├── logger/       # one structured logger, TS and Rust
+│   ├── ui/           # UI pieces every app shares
+│   ├── logger/       # one logger for every app
 │   └── typescript-config/
-├── .agents/          # rules, roles, board, skills: the agents' handbook
-├── scripts/          # architecture and naming checks, git hooks
-├── AGENTS.md         # read this first
+├── .agents/          # the agents' handbook: rules, roles, board
+├── scripts/          # checks and git hooks
+├── AGENTS.md         # "read this first"
 └── DESIGN.md         # the design system, in words
 ```
 
-The rule behind it is short: **keep apps thin and put reusable behaviour in packages.** An app is routing, composition and the parts that are genuinely its own. Anything two apps need lives in a package with a name like `@starter/ui`, imported the same way everywhere.
+The rule is simple: **apps stay thin, and shared code goes in packages.** An app is its pages, its routes and the parts that truly belong only to it. If two apps need the same thing, it moves into a package and both import it the same way.
 
-For agents, the monorepo is the point. One clone holds the API, the web app and the UI kit, so an agent changing an endpoint can see every caller of it. One lint, format, typecheck and test surface means one command proves the whole change. And one copy of each shared piece means an agent cannot "fix" a button in one app and leave the other three behind.
+**Why this matters for agents:**
 
-## Modules with one front door
+- **It sees everything at once.** When an agent changes an API endpoint, it can find every screen that calls it, in the same clone.
+- **One command checks it all.** Lint, typecheck and tests run across every app with a single command.
+- **No copies drift apart.** There is one button component, so an agent cannot fix it in one app and forget the other three.
 
-Inside an app, features are modules, and every module has exactly one public entrypoint: its `index.ts`. Everything else in the folder is private.
+## 3. How to structure a module
 
-```text filename="apps/web/src"
-app/          # routing and composition only
-modules/      # one folder per feature: auth, billing, chat, users…
-  billing/
-    index.ts  # the front door: what other code may import
-    …         # components, data and logic, private to the module
-components/   # reusable visual pieces
-lib/          # framework-agnostic helpers
+Inside an app, each feature is a **module**: one folder per feature. Here is a real one, the inbox in Grid's console:
+
+```text filename="apps/console/src/modules/inbox"
+inbox/
+├── index.ts                   # the front door
+├── components/
+│   ├── inbox-screen.tsx
+│   └── inbox-screen.test.tsx
+├── stores/
+│   ├── inbox.ts
+│   └── inbox.test.ts
+├── services/
+│   └── inbox.service.ts       # talks to the API
+├── lib/
+│   ├── kinds.tsx
+│   ├── opened.ts
+│   └── opened.test.ts
+└── types/
+    └── inbox.types.ts
 ```
 
-A route imports `@/modules/billing`, never `@/modules/billing/components/plan-card`. That one rule gives an agent a map: to use a feature, read its `index.ts`; to change a feature, stay inside its folder. It also means a module's insides can be refactored freely, because nothing outside depends on them.
+The rules for a module:
 
-This is not a convention I hope agents follow. It is a check:
+1. **One front door.** `index.ts` lists what other code may use: the screen, the store, the types. Everything else is private to the module.
+2. **Same folders every time.** `components` for UI, `stores` for state, `services` for API calls, `lib` for small helpers, `types` for types. An agent that has seen one module knows them all.
+3. **Tests live next to the code.** `opened.ts` sits beside `opened.test.ts`, so a change and its test are never far apart.
+4. **No reaching inside.** Other code imports `@/modules/inbox`, never `@/modules/inbox/lib/opened`.
+
+The app around the modules has its own clear layers too: `app/` (or `routes/`) only for routing and putting pages together, `modules/` for features, `components/` for shared visual pieces, and `lib/` for helpers that do not depend on any framework.
+
+**Why the front door matters:** it gives an agent a map. To *use* a feature, read its `index.ts`. To *change* a feature, stay inside its folder. And because nothing outside depends on a module's insides, you can refactor them freely.
+
+## 4. The same layers in every API
+
+The API follows one shape, whatever the framework:
+
+1. **Routes** at the top. They read the request, check the input, call the logic and send the reply. They stay thin.
+2. **Logic** in the middle. This is where the domain rules live, as plain functions or services.
+3. **Data** at the bottom. Only this layer talks to the database.
+
+Things every request needs, like errors, input validation, the sign-in check, rate limits and request ids, live in their own shared folder.
+
+In Starter's NestJS API, each domain module has a `users.module.ts`, `users.service.ts`, `users.repository.ts` and `users.types.ts`. Shared HTTP pieces sit in `src/common/` and settings in `src/config/`.
+
+Grid later moved from NestJS to Hono on Bun, and **the shape did not change**. Each module has a `routes.ts`, its input schemas, plain functions for logic and queries, and tests beside them. Shared pieces moved to `src/http/`, and the database schema and migrations moved to a shared `packages/db`.
+
+**Why this matters:** you could swap the whole framework and keep the map. An agent that learned where things go in one project already knows where they go in the next.
+
+## 5. The API contract: one page, and tests that prove it
+
+The **contract** is the promise the API makes to everyone who calls it: the web app, the mobile app, the runner, other agents. In Grid, it lives on one page in the docs, `backend-api.mdx`. For every endpoint it lists the method, path, who may call it, and what goes in and out.
+
+The rules around it:
+
+- **Callers read it first.** Before a web agent uses an endpoint, it reads the contract, not the API's code.
+- **Change the code, change the contract, in the same commit.** If a backend agent changes a public endpoint, it updates the page in the same change.
+- **Every change goes in a changelog,** with the date and whether it breaks anything. For example: *"Signup needs an invite token unless the owner opens signup. Breaking: yes."*
+
+A page can still lie, so the contract is also **tested**. Grid has a contract test suite that does not look at the code at all. It starts a real API with its own fresh database and calls it over HTTP, like a real client would, checking every response the apps depend on. When Grid moved from NestJS to Hono, this suite is what proved nothing broke for the people using the API.
+
+There is a small story in that suite too. It once pointed at the developer's everyday API by default, and it filled that database with test accounts. Now it refuses to run unless you name a throwaway API on purpose. **Good architecture is full of small rules like that, each one learned from a real mistake.**
+
+## 6. The agent board: how work gets assigned
+
+Agents do not just "start coding". Every change starts as a **card** on a board, and the board is plain Markdown files in the repo:
+
+```text filename=".agents/board"
+board/
+├── open/     # raised, waiting for someone
+├── doing/    # claimed and in progress
+└── done/     # finished, kept forever as history
+```
+
+A card says exactly what to build and where. Here is the top of a real Grid card:
+
+```yaml filename="a real card"
+title: Toasts for action feedback, and a faster new-task flow
+from: ui-ux
+to: web
+assignee: codex
+reviewer: claude
+branch: agent/web/console-toasts
+worktree: ../grid-worktrees/agent/web/console-toasts
+scope:
+  - apps/console/src/ui/toast.tsx
+  - apps/console/src/ui/toast.test.tsx
+  - apps/console/src/modules/projects/components/new-task-dialog.tsx
+```
+
+Here is what each part means, and why it is there:
+
+- **Roles.** Every agent works as one role: backend, web, UI/UX, QA, reviewer or PM. Each role has a short charter saying what it owns and what it must not touch.
+- **Ownership map.** `.agents/ownership.yaml` lists which folders each role may change. The default is "deny": if a path is not yours, you do not write to it. Reading is open to everyone.
+- **Scope.** The card lists the exact files the change may touch. It can be narrower than the role, never wider. If the agent finds a problem outside its scope, it raises a new card for the owner instead of fixing it on the side.
+- **A branch and a worktree per card.** Each card gets its own branch, like `agent/web/console-toasts`, and its own copy of the repo on disk. Two agents never edit the same checkout, so they cannot step on each other.
+- **A different reviewer.** The agent that wrote the code never reviews it.
+- **Evidence, not "done".** Before a card closes, the agent records which files changed, which checks it ran and their real results, whether the contract changed, and the commit. "It works on my machine" is not evidence.
+
+The contract for agents even sorts mistakes by how serious they are. A genuine blocker reported honestly is fine. Missing evidence must be fixed before merge. Editing outside the scope means the work comes back. Claiming tests passed when they did not, or committing a secret, removes that agent's right to merge.
+
+**Why all this:** most bad agent work I have seen is not bad code. It is **drive-by changes**: a refactor nobody asked for, a file reformatted, a test quietly loosened. A clear scope and a different reviewer stop that before it starts.
+
+## 7. The checks on every commit, and why
+
+Every commit runs a set of checks first, using git hooks (Lefthook). If any check fails, the commit does not happen. Here is each one, and the reason it exists:
+
+| Check | What it does | Why |
+| --- | --- | --- |
+| Trailing whitespace | Removes stray spaces at line ends | Keeps diffs clean, so reviews show real changes only |
+| Format | Formats every file (oxfmt, shfmt and others) | Nobody argues about style, and agents cannot make "format-only" noise |
+| Lint | Runs oxlint and fixes what it can | Catches bugs and bad patterns while they are cheap to fix |
+| Typecheck | Runs TypeScript across every app | A type error in one package breaks every app that uses it |
+| Architecture check | Blocks deep imports and bad cross-app imports, and checks file names | Keeps the module "front doors" and boundaries real, not just written down |
+| Large files | Refuses any file over 2 MB | Stops build output, videos or dumps from bloating the repo forever |
+| Secret scan | Looks for private keys, API keys, passwords and tokens in what you added | A secret in git history is very hard to remove, so stop it at the door |
+| Commit message | Requires Conventional Commits, like `feat(auth): add passkey login` | Clear history for humans, and changelogs that can be generated |
+
+The architecture check is just a few searches that must come back empty:
 
 ```bash filename="scripts/architecture/check-boundaries.sh"
-# Outside a module, consumers import public entrypoints only, not deep paths.
+# Outside a module, import its front door only, never its insides.
 rg -n 'from\s+"@/modules/[^"]+/[^"]+/[^"]+"' apps/web/src/app apps/web/src/components apps/web/src/lib
 
-# Packages stay app-agnostic and never import an app's '@/...' alias.
+# Shared packages never import an app's own '@/...' code.
 rg -n 'from\s+"@/' packages
 
 # Apps never reach into each other with relative paths.
 rg -n '\.\./\.\./apps/' apps
 ```
 
-Each search must come back empty, and the script runs in the pre-commit hook and in CI. An agent that takes a shortcut finds out in seconds, with the exact line, instead of in review a day later.
+The naming check makes every file and folder kebab-case, like `billing-page.tsx`, while still allowing names frameworks need, like `auth.service.ts`, `(auth)` and `[id]`.
 
-## The same layers in every API
+Before pushing, there is one more command: `bun run preflight`, which runs lint, typecheck and tests together.
 
-The API follows one shape: a thin transport layer, plain logic in the middle, data access at the bottom, and cross-cutting HTTP concerns kept in their own folder.
+**Why run checks on every commit, not just in CI?** Speed. An agent that breaks a rule hears about it in seconds, with the exact file and line, and fixes it right away. Without the hook it finds out ten minutes later in CI, or a day later in review, when it has long moved on.
 
-In Starter's NestJS API that is a module per feature (`users.module.ts`, `users.service.ts`, `users.repository.ts`, `users.types.ts`), with filters, interceptors, pipes and middleware in `src/common/` and configuration in `src/config/`. Controllers stay thin, business logic lives in services, and only repositories talk to the database.
+## 8. CI: every pull request proves itself
 
-Grid replaced NestJS with Hono on Bun, and the shape did not change: `src/modules/*` holds each feature's `routes.ts` plus plain functions for logic and queries, `src/http/*` holds the envelope, errors, validation, sign-in check, rate limits and request ids, and the schema and migrations moved into a shared `packages/db`.
+Nothing goes into `main` directly. Every pull request runs the full CI pipeline on GitHub Actions:
 
-That is the real test of an architecture: you can swap the framework and keep the map. An agent that learned where things go in one project already knows where they go in the next.
+1. **Lint** the whole repo, including shell scripts.
+2. **Typecheck** every app and package.
+3. **Build** every app, so we know it really compiles for production.
+4. **Test.** Unit tests run against a real Postgres database, with migrations applied first.
+5. **API contract.** A fresh Postgres is migrated and seeded, the real API starts, CI waits until its health check answers, then the contract suite runs against it.
+6. **End-to-end.** Playwright opens the web app in a real browser and clicks through it.
 
-## Validate config at the edge
+A separate **security** workflow runs on every pull request too: **dependency review** flags risky new packages, and **CodeQL** scans the code for security problems.
 
-Environment variables are the most common way a working change breaks in production, and agents add them freely. So configuration is parsed once, at startup, against a schema:
+Two small settings make a big difference. CI installs with a frozen lockfile, so it uses exactly the package versions you tested. And when you push again, the older run is cancelled, so you never wait on a result that no longer matters.
+
+**Why this matters for agents:** CI is the referee nobody can argue with. An agent cannot say "it works" when the build is red. And because CI is the same for every agent and every human, the bar is the same for everyone.
+
+## 9. CD: shipping without heroics
+
+Deploying follows the same idea: make it automatic, make it boring, and make it easy to check. Starter ships this pipeline with the deploy steps left for each project to fill in; Grid fills them in like this:
+
+- **Every merge to `main` goes to staging.** First the same quality gate runs again (preflight, plus the Rust checks). Then the API deploys to staging on Render, pinned to that exact commit. Then the pipeline **waits for the health check**. If staging is not healthy within ten minutes, the deploy fails loudly.
+- **Production only ships from a version tag**, like `v0.2.0`. Same gate, same deploy, same health check, but on purpose and never by accident.
+- **The web app and docs** deploy through their Vercel projects, and the database runs on Neon.
+- **Secrets live in GitHub environments** (`staging` and `production`), never in the repo. If a deploy secret is missing, the job stops and says which one.
+
+**Why tags for production?** Because a merge is "this code is ready", while a release is "we choose to ship this now". Keeping those two decisions apart means an agent's merged pull request can never reach your users on its own.
+
+## 10. Check the settings once, at startup
+
+Settings (environment variables) are one of the most common ways a working change breaks in production, and agents add new ones freely. So every setting is checked against a schema once, when the app starts:
 
 ```ts filename="apps/nest-api/src/config/env.schema.ts (excerpt)"
 export const envSchema = z
@@ -100,78 +250,46 @@ export const envSchema = z
 	})
 ```
 
-The app reads typed config through one config service instead of reaching for `process.env` wherever it likes. A missing or malformed value stops the process with a clear message instead of surfacing as a strange bug three requests later. And when an agent needs a new setting, there is exactly one place to add it.
+The rest of the app reads typed settings through one config service. A missing or wrong value stops the app at startup with a clear message, instead of turning into a strange bug three requests later. And when an agent needs a new setting, there is exactly one place to add it.
 
-## One home for every truth
+## 11. One home for every truth
 
-The fastest way to confuse an agent is two documents that disagree. So every kind of truth has exactly one home, and everything else links to it:
+Nothing confuses an agent faster than two documents that disagree. So each kind of truth has exactly one home, and everything else links to it:
 
 | Truth | Its one home |
 | --- | --- |
 | How to work in the repo | `AGENTS.md`, then `.agents/` |
-| Who may change which paths | `.agents/ownership.yaml` |
+| Who may change which folders | `.agents/ownership.yaml` |
 | The design system | `DESIGN.md` |
-| The API contract | `apps/docs/content/docs/backend-api.mdx` |
-| Project docs | the docs app; there is no root `docs/` folder |
-| Decisions and their reasons | ADRs under `/docs/architecture` |
+| The API contract | `backend-api.mdx` in the docs app |
+| Project docs | the docs app (there is no loose `docs/` folder) |
+| Big decisions and why | decision records under `/docs/architecture` |
 
-`.agents/` is the single source for agent rules, skills and plans, with no second copy for each editor. When a doc and the code drift, that is a bug to fix the same day, because the next agent will believe whichever one it read first.
+If a document and the code disagree, that is a bug, and it gets fixed the same day. The next agent will believe whichever one it reads first.
 
-## Names are an index
+## 12. Strong defaults, with a way out
 
-Agents navigate by search, so names are part of the architecture. Every file and folder under a TypeScript `src/` is kebab-case, with dotted roles where a framework expects them (`auth.service.ts`, `users.module.ts`) and the router's own segments allowed (`(auth)`, `[id]`, `@slot`). A naming check enforces it beside the boundary check.
+None of this is meant to be a cage. Starter's very first architecture decision says it plainly: **strong defaults, enforced by checks, with a written way to override them.** If a project needs to break a rule, it writes down why in `/docs/overrides`. A project can also add its own, stricter rules on top.
 
-It sounds small. In practice it means `billing` is always `billing`, a search for a feature finds all of it, and an agent never creates `BillingPage.tsx` next to `billing-page.tsx`.
+That is how one starter became very different products. Grid swapped the API framework and added a Solid console, but kept the same layers, the same checks and the same `.agents/` handbook. School OS runs the same Next.js, Expo and NestJS stack. The map stays the same, so an agent or a person can move between projects without learning everything again.
 
-## Give agents write boundaries
+## A checklist you can steal
 
-Reading the whole repository is fine; writing anywhere is not. Grid makes that explicit in a machine-readable map:
-
-```yaml filename=".agents/ownership.yaml (trimmed)"
-policy:
-  default: deny-unowned-writes
-  read_access: broad-for-understanding
-  write_access: card-scope-only
-
-roles:
-  backend:
-    paths: [apps/api/**, packages/db/**, apps/runner/**]
-  web:
-    paths: [apps/console/**, apps/web/**]
-```
-
-Each task is a card with a scope narrower than the role's paths, on its own branch and worktree. An agent that finds a problem outside its scope raises a card for the owner instead of fixing it in passing. I wrote about how that plays out day to day in [Building Grid with the agents it runs](/writing/building-grid-with-the-agents-it-runs); the architectural point is that the boundaries are files, so they can be read, reviewed and checked like code.
-
-## Turn rules into checks
-
-Every rule above that matters is also a test, a script or a hook, because a rule that only lives in a document is a suggestion:
-
-- **Import boundaries and naming:** `bun run architecture:check`, in pre-commit and CI.
-- **Design rules:** Grid's console fails the build on a font size outside the type scale, a one-off animation duration or a fixed corner radius.
-- **The API contract:** in Grid, a CI job migrates and seeds a real Postgres, starts the API, waits for its health check, and runs the contract suite against it.
-- **The basics on every commit:** format, lint, typecheck, the architecture check, a large-file guard, a secret scan and Conventional Commit messages, all in Lefthook.
-
-The effect on agent work is huge. Instead of reviewing every diff for the same ten mistakes, I review the intent, and the machine catches the rest with a message the agent can act on.
-
-## Strong default, overridable
-
-None of this is meant to be rigid. Starter's first architecture decision record says it plainly: strong defaults with automated guardrails, and a documented way to override them per project. An override needs a written reason in `/docs/overrides`, a project can add its own stricter rules, and overrides should add to the default rather than tear it out.
-
-That balance is what lets one starter become very different products. Grid swapped the API framework and added a Solid console, and kept the same layers, checks and `.agents/` handbook. School OS, a multi-tenant school platform, runs the same Next.js, Expo and NestJS stack. Because the map stays the same, an agent, or a person, can move between projects without relearning where things go.
-
-## A checklist for an agent-ready repo
-
-- An `AGENTS.md` at the root that says what to read, in what order.
-- Apps that are thin, and packages for anything shared.
-- One public entrypoint per module, and a check that blocks deep imports.
-- The same layers in every service: transport, logic, data, and cross-cutting concerns apart.
-- Configuration validated once, at startup, against a schema.
-- One home for each truth, linked from everywhere else.
-- Names that are consistent enough to search, enforced by a check.
-- Write boundaries in a file, and tasks scoped narrower than roles.
-- Every important rule backed by a test, a script or a hook.
-- A written path for breaking the rules on purpose.
+- Split the product into domains, and give each domain's rules one home.
+- One monorepo. Thin apps, shared packages.
+- Every module has one front door (`index.ts`) and the same folders inside.
+- Tests sit next to the code they test.
+- APIs use the same layers: routes, logic, data.
+- One contract page, updated in the same commit as the code, with a changelog.
+- Contract tests that call the real API over HTTP.
+- A board of cards with roles, an ownership map, a narrow scope and a different reviewer.
+- One branch and one worktree per card.
+- Checks on every commit: format, lint, typecheck, architecture, large files, secrets, commit message.
+- CI on every pull request: lint, typecheck, build, tests, contract, end-to-end, security.
+- Staging on every merge, production only on a tag, with health checks after both.
+- Settings checked once, at startup.
+- A written way to break the rules on purpose.
 
 ## Closing
 
-Agents made code cheap to write and expensive to trust. Architecture is how you get the trust back: a structure an agent can read, boundaries it cannot cross by accident, and checks that tell it when it tried. Get that right once, in a starter, and every project after it begins already knowing where things go.
+AI agents made code cheap to write and hard to trust. Architecture is how you win the trust back. Give agents a project they can read, boundaries they cannot cross by accident, and checks that tell them the moment they slip. Build that once, in a starter, and every project after it begins already knowing where everything goes.
