@@ -54,7 +54,7 @@ export const PRODUCTS: Product[] = [
 			"The console is a Solid 2 single-page app built for speed. The API is Hono on Bun with PostgreSQL, and a small runner on each machine that holds a project streams agent and terminal work back to the console.",
 			"Grid is open source under MIT or Apache-2.0. Its own site has the install guide and the docs.",
 		],
-		posts: ["building-grid-with-the-agents-it-runs", "make-shipping-boring-on-purpose", "ui-ux-design-in-the-ai-era"],
+		posts: ["building-grid-with-the-agents-it-runs", "make-shipping-boring-on-purpose", "ui-ux-design-in-the-ai-era", "architecture-for-the-agent-era"],
 		facts: [
 			["Stack", "SolidJS, Hono, PostgreSQL, Bun"],
 			["Status", "Open-source beta"],
@@ -107,7 +107,7 @@ export const PRODUCTS: Product[] = [
 	{
 		name: "Starter",
 		slug: "starter",
-		updatedAt: "2026-10-09",
+		updatedAt: "2026-10-12",
 		label: "SaaS monorepo",
 		status: { label: "Open source", tone: "green" },
 		desc: "The monorepo every RabtX product starts from: web, mobile, API and docs with one UI layer and one CI pipeline.",
@@ -128,7 +128,7 @@ export const PRODUCTS: Product[] = [
 			"Bun workspaces and Turborepo run the task graph, with oxlint and oxfmt for style and import-boundary checks that keep packages apart.",
 			"Starter is open source under MIT or Apache-2.0, with a live demo of the web app.",
 		],
-		posts: ["make-shipping-boring-on-purpose", "frontend-performance-under-real-traffic"],
+		posts: ["make-shipping-boring-on-purpose", "frontend-performance-under-real-traffic", "architecture-for-the-agent-era"],
 		facts: [
 			["Stack", "Next.js, Expo, NestJS, Bun, Turborepo"],
 			["License", "MIT / Apache-2.0"],
